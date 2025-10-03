@@ -31,7 +31,7 @@ It fetches professor data from UCSC’s public directory API using each professo
 
 ```
 ├── public/
-│ └── manifest.json # Chrome extension manifest (MV3)
+│ └── manifest.json # Chrome extension manifest (MV3)ga
 ├── src/
 │ ├── App.jsx # React component for professor card(will be changed later)
 │ ├── background.js # Background service worker (handles API + cache)
@@ -60,3 +60,11 @@ It fetches professor data from UCSC’s public directory API using each professo
 5. When prompted, navigate to the direcory where you cloned the repo and select the dist folder.
 6. Navigate to `https://my.ucsc.edu/psc/csprd/EMPLOYEE/SA/c/NUI_FRAMEWORK.PT_AGSTARTPAGE_NUI.GBL?CONTEXTIDPARAMS=TEMPLATE_ID%3aPTPPNAVCOL&scname=ADMN_ENROLLMENT&PTPPB_GROUPLET_ID=SCX_ENROLLMENT&CRefName=ADMN_NAVCOLL_4&PanelCollapsible=Y&AJAXTransfer=Y`
 7. Perform any search you want and you should see 'Hello World' in red appear under each prof panel :)
+
+## Other Resources
+
+I recommend checking out the following to get familiar working with chrome extensions
+
+- [Chrome Extension Architecture](https://youtu.be/TRwYaZPJ0h8?si=d9pQA1qZT-87j-Ap)
+- [FreeCodeCamp Intro](https://youtu.be/0n809nd4Zu4?si=6lfGnFvhqnSIX1A1)
+- [Chrome Extension + React](https://youtu.be/GGi7Brsf7js?si=xrqKeF2iaKOHw4Mz)
