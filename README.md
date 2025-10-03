@@ -29,10 +29,11 @@ It fetches professor data from UCSC’s public directory API using each professo
 
 ## Project Structure
 
+```
 ├── public/
 │ └── manifest.json # Chrome extension manifest (MV3)
 ├── src/
-│ ├── App.jsx # React component for professor card
+│ ├── App.jsx # React component for professor card(will be changed later)
 │ ├── background.js # Background service worker (handles API + cache)
 │ ├── content.js # Content script (injected into UCSC enrollment iframe)
 │ ├── main.jsx # React entry point
@@ -43,6 +44,7 @@ It fetches professor data from UCSC’s public directory API using each professo
 ├── package-lock.json # Dependency lockfile
 ├── .gitignore # Ignore dist/, node_modules/, etc.
 └── README.md # Project documentation
+```
 
 ## Steps to run the Extension
 
