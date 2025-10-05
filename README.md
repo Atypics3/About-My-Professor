@@ -28,23 +28,7 @@ It fetches professor data from UCSC’s public directory API using each professo
 ---
 
 ## Project Structure
-
-```
-├── public/
-│ └── manifest.json # Chrome extension manifest (MV3)ga
-├── src/
-│ ├── App.jsx # React component for professor card(will be changed later)
-│ ├── background.js # Background service worker (handles API + cache)
-│ ├── content.js # Content script (injected into UCSC enrollment iframe)
-│ ├── main.jsx # React entry point
-│ └── … # Additional components/utilities go here
-├── index.html # ignore for now
-├── vite.config.js # Vite build config (bundles React + content/background scripts)
-├── package.json # Project dependencies + scripts
-├── package-lock.json # Dependency lockfile
-├── .gitignore # Ignore dist/, node_modules/, etc.
-└── README.md # Project documentation
-```
+- to be made later lol
 
 ## Steps to run the Extension
 
@@ -57,7 +41,7 @@ It fetches professor data from UCSC’s public directory API using each professo
 2. Navigate to `chrome://extensions/` in the search bar
 3. Make sure to turn on `Developer Mode` in the top right corner
 4. Click on `Load Unpacked` in the top left corner
-5. When prompted, navigate to the direcory where you cloned the repo and select the dist folder.
+5. When prompted, navigate to the direcory where you cloned the repo and select the `Dist` folder.
 6. Navigate to `https://my.ucsc.edu/psc/csprd/EMPLOYEE/SA/c/NUI_FRAMEWORK.PT_AGSTARTPAGE_NUI.GBL?CONTEXTIDPARAMS=TEMPLATE_ID%3aPTPPNAVCOL&scname=ADMN_ENROLLMENT&PTPPB_GROUPLET_ID=SCX_ENROLLMENT&CRefName=ADMN_NAVCOLL_4&PanelCollapsible=Y&AJAXTransfer=Y`
 7. Perform any search you want and you should see 'Hello World' in red appear under each prof panel :)
 
