@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "My UCSC Prof Extension",
+  "name": "About My Professor",
   "version": "1.0",
   "permissions": ["storage"],
   "host_permissions": [
