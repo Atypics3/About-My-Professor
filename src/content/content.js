@@ -15,7 +15,7 @@ function renderIntoPanels() {
     root.render(
       <React.StrictMode>
         <ProfCard />
-      </React.StrictMode>
+      </React.StrictMode>,
     );
   });
 }
