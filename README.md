@@ -28,12 +28,12 @@ It fetches professor data from UCSC’s public directory API using each professo
 ---
 
 ## Project Structure
+
 - to be made later lol
 
 ## Steps to run the Extension
 
 1. Navigate to the directory of your choice and run the following commands:
-
    - `git clone https://github.com/IvanKuria/About-My-Professor`
    - `npm i`
    - `npm run build`
