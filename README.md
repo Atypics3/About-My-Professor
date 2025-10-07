@@ -18,10 +18,10 @@ It fetches professor data from UCSC’s public directory API using each professo
 ## Tech Stack
 
 - **Manifest v3** – Chrome extension base
-- **React + Vite** – UI framework and bundler
+- **React + Webpack** – UI framework and bundler
 - **Content Scripts** – scan and inject React roots
 - **Background Service Worker** – API fetch + caching
-- **TailwindCSS** (optional) – styling
+- **CSS** – styling
 - **chrome.storage.local** – cache layer
 - **prof-map.json** – local mapping of abbreviated names → UID
 
@@ -52,3 +52,7 @@ I recommend checking out the following to get familiar working with chrome exten
 - [Chrome Extension Architecture](https://youtu.be/TRwYaZPJ0h8?si=d9pQA1qZT-87j-Ap)
 - [FreeCodeCamp Intro](https://youtu.be/0n809nd4Zu4?si=6lfGnFvhqnSIX1A1)
 - [Chrome Extension + React](https://youtu.be/GGi7Brsf7js?si=xrqKeF2iaKOHw4Mz)
+
+## Notes
+
+1. When commiting to the remote repo, **make sure to run** `npm run clean` to make sure your code is formatted accurately. This is done so everyone follows the same formatting style. If not, you'll fail the formatting check :(
