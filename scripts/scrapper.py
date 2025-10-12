@@ -34,7 +34,7 @@ def smart_select_dropdown_value(xpath: str, visible_text: str, timeout: int = TI
     )
     Select(el).select_by_visible_text(visible_text)
 
-# ---------- DuckDuckGo (your logic) ----------
+# ---------- DuckDuckGo stuff ----------
 def duck_search(query: str) -> str | None:
     encoded = urllib.parse.quote_plus(query)
     url = f"https://duckduckgo.com/?q={encoded}&ia=web"
@@ -52,13 +52,13 @@ def duck_search(query: str) -> str | None:
     except TimeoutException:
         result = None
 
-    # close DDG tab and return to UCSC tab
+    # close new tab and return to UCSC pisa tab
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
 
     return result
 
-# ---------- Main scrape ----------
+# ---------- Main scrape stuff ----------
 def get_professor_name_and_link():
     for i in range(100):
         try:
