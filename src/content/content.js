@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import ProfCard from "../react/components/ProfCard.jsx";
+import ProfInfoButton from "../react/components/ProfInfoButton.jsx";
 
 function renderIntoPanels() {
   const panels = document.querySelectorAll(".panel.panel-default.row");
@@ -18,7 +18,7 @@ function renderIntoPanels() {
     // however, in our case we will render it elsewhere(our own custom 'root')
     root.render(
       <React.StrictMode>
-        <ProfCard />
+        <ProfInfoButton />
       </React.StrictMode>,
     );
   });
