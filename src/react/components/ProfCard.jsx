@@ -50,9 +50,15 @@ export default function ProfInfoButton() {
           }}
         >
           <h3 style={{ marginTop: 0, color: "#0055A2" }}>Professor Info</h3>
-          <p><strong>Name:</strong> John Doe</p>
-          <p><strong>Department:</strong> Computer Science</p>
-          <p><strong>Email:</strong> johndoe@ucsc.edu</p>
+          <p>
+            <strong>Name:</strong> John Doe
+          </p>
+          <p>
+            <strong>Department:</strong> Computer Science
+          </p>
+          <p>
+            <strong>Email:</strong> johndoe@ucsc.edu
+          </p>
 
           <button
             onClick={() => setOpen(false)}
