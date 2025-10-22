@@ -37,8 +37,9 @@ function renderIntoPanels() {
     let text = panel.innerText;
     let res = text.match(re);
     let name = res[1];
-    console.log(name);
-    //how to send this to the component
+    //console.log(name);  
+
+    
 
     const mount = document.createElement("div");
     mount.className = "about-my-professor-root";
@@ -47,9 +48,10 @@ function renderIntoPanels() {
 
     // in a typical react application, you'll render the main entry point within 'root'
     // however, in our case we will render it elsewhere(our own custom 'root')
+    // also pass name as a property (variable) to the component
     root.render(
       <React.StrictMode>
-        <ProfInfoButton />
+        <ProfInfoButton profName = {name}/> 
       </React.StrictMode>,
     );
   });
