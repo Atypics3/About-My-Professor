@@ -58,8 +58,7 @@ export default function ProfInfoButton(props) {
           </p>
           <p>
             <strong>Email:</strong> johndoe@ucsc.edu
-          </p>
-          m{" "}
+          </p>{" "}
         </div>
       )}
     </div>
