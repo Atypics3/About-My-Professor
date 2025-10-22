@@ -18,18 +18,7 @@ function getProfName(panel) {
 }
 
 async function getProfileDict(uID) {
-  return chrome.runtime.sendMessage(
-    { greeting: "hello from content script", ID: uID }, //, (response) => {
-    // console.log("Received response:", response.farewell);
-    // const res = await response.farewell;
-    // if(res != "Error fetching data"){
-    //   return await res;
-    // }
-    // else{
-    //   return null;
-    // }
-    //}
-  );
+  return chrome.runtime.sendMessage({ ID: uID });
 }
 
 function renderIntoPanels() {
@@ -66,11 +55,13 @@ function renderIntoPanels() {
     }
     //console.log(uID);
 
-    //let profileDict = null
     //get fullName from API
     let profileDict = null;
     if (uID != "jdoe") {
       profileDict = await getProfileDict(uID);
+      if (profileDict.data.success == false) {
+        profileDict = null;
+      }
     }
     //console.log("dict: ", profileDict.data);
     let profData = null;

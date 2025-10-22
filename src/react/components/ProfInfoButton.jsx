@@ -10,10 +10,9 @@ export default function ProfInfoButton(props) {
   //useEffect so this isn't run every time page reloads
   useEffect(() => {
     //get fullname from content.js
-    console.log(props.apiData);
+    //console.log(props.apiData);
     if (props.apiData != null) {
       let name = props.apiData.cn;
-      //console.log(name);
       getFullName(name);
     } else {
       getFullName("John Doe");
