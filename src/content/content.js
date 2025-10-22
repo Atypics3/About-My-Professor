@@ -73,7 +73,10 @@ function renderIntoPanels() {
       profileDict = await getProfileDict(uID);
     }
     //console.log("dict: ", profileDict.data);
-    const profData = profileDict.data;
+    let profData = null;
+    if (profileDict != null) {
+      profData = profileDict.data;
+    }
 
     const mount = document.createElement("div");
     mount.className = "about-my-professor-root";
