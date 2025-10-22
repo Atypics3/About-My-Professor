@@ -37,9 +37,7 @@ function renderIntoPanels() {
     let text = panel.innerText;
     let res = text.match(re);
     let name = res[1];
-    //console.log(name);  
-
-    
+    //console.log(name);
 
     const mount = document.createElement("div");
     mount.className = "about-my-professor-root";
@@ -51,7 +49,7 @@ function renderIntoPanels() {
     // also pass name as a property (variable) to the component
     root.render(
       <React.StrictMode>
-        <ProfInfoButton profName = {name}/> 
+        <ProfInfoButton profName={name} />
       </React.StrictMode>,
     );
   });
