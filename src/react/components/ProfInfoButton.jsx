@@ -10,7 +10,7 @@ export default function ProfInfoButton(props) {
   //useEffect so this isn't run every time page reloads
   useEffect(() => {
     //get fullname from content.js
-    //console.log(props.apiData);
+    // console.log(props.apiData);
     if (props.apiData != null) {
       let name = props.apiData.cn;
       getFullName(name);
@@ -34,11 +34,14 @@ export default function ProfInfoButton(props) {
             <strong>Name:</strong> {fullName}
           </p>
           <p>
-            <strong>Department:</strong> Computer Science
+            <strong>Department:</strong> {props.apiData?.ucscpersonpubdepartmentnumber || "Not Listed"}
           </p>
           <p>
             <strong>Email:</strong> johndoe@ucsc.edu
           </p>{" "}
+          <p>
+            <strong>Office Hours:</strong> {props.apiData?.ucscpersonpubofficehours || "Not listed"}
+          </p>
         </div>
       )}
     </div>

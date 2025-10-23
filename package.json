@@ -26,7 +26,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "clean": "npx prettier --write .",
-    "dev": "",
+    "dev": "webpack --watch  --progress",
     "test": ""
   },
   "devDependencies": {
