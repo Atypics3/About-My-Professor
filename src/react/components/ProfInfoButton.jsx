@@ -1,62 +1,58 @@
 import React, { useState, useEffect } from "react";
 import "../styles/index.css";
-import default_pfp from "../../images/default_pfp.png"
 
 export default function ProfInfoButton(props) {
   // Track whether popup is open or closed
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   //get full name from api
   const [fullName, getFullName] = useState("");
-  const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [isPhoto, seIsPhoto] = useState("");
 
-  // Function to handle image loading errors
-  function handleImageError() {
-    setImageError(true);
-  };
+  // handles photos that are valid and invalid - I.K
+  function handlePhotoURL() {
+    const photoURL = props.apiData.jpegphoto;
+    if (photoURL && photoURL.includes("uid")) {
+      seIsPhoto(photoURL);
+    } else {
+      seIsPhoto(""); 
+    }
+  }
 
-  // Function to handle successful image load
-  function handleImageLoad() {
-    setImageLoaded(true);
-    setImageError(false);
-  };
+  // handles opening and closing of pop up - I.K
+  function handleOpen() {
+    setIsOpen(prev => !prev);
+  }
 
   //useEffect so this isn't run every time page reloads
   useEffect(() => {
     //get fullname from content.js
-    //console.log(props.apiData);
-      const name = props.apiData.cn;
-      
-      setImageError(false); // Reset error state when new data comes in
-      setImageLoaded(false); // Reset loaded state when new data comes in
-      getFullName(name);
-    },[])
+    const name = props.apiData.cn;
 
-  
+    getFullName(name);
+    handlePhotoURL();
+  },[])
 
   return (
     <div className="prof-info-container">
       {/* Button to toggle popup */}
-      <button onClick={() => setOpen(!open)}>
-        {open ? "Hide Professor Info" : "Show Professor Info"}
+      <button onClick={handleOpen}>
+        {isOpen ? "Hide Professor Info" : "Show Professor Info"}
       </button>
 
       {/* Popup content — only visible if `open` is true */}
-      {open && (
+      {isOpen && (
         <div>
           <h3 style={{ marginTop: 0 }}>Professor Info</h3>
-          {!imageError ? (
+          {isPhoto ? (
             <img 
-              class="prof-photo" 
-              src={props.apiData.jpegphoto}
-              onError={handleImageError}
-              onLoad={handleImageLoad}
+              className="prof-photo" 
+              src={isPhoto}
               alt="Professor photo"
             />
             ): 
             <img 
-              class="prof-photo" 
-              src={default_pfp}
+              className="prof-photo" 
+              src={chrome.runtime.getURL("images/default_pfp.png")}
               alt="Default profile picture"
             />
             }
