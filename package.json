@@ -26,7 +26,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "clean": "npx prettier --write .",
-    "dev": "",
+    "dev": "webpack --watch  --progress",
     "test": ""
   },
   "devDependencies": {
@@ -36,6 +36,7 @@
     "babel-loader": "^10.0.0",
     "copy-webpack-plugin": "^13.0.1",
     "css-loader": "^7.1.2",
+    "prettier": "3.6.2",
     "style-loader": "^4.0.0",
     "webpack": "^5.102.0",
     "webpack-cli": "^6.0.1"
