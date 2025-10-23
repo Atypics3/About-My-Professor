@@ -14,13 +14,13 @@ export default function ProfInfoButton(props) {
     if (photoURL && photoURL.includes("uid")) {
       seIsPhoto(photoURL);
     } else {
-      seIsPhoto(""); 
+      seIsPhoto("");
     }
   }
 
   // handles opening and closing of pop up - I.K
   function handleOpen() {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   }
 
   //useEffect so this isn't run every time page reloads
@@ -30,7 +30,7 @@ export default function ProfInfoButton(props) {
 
     getFullName(name);
     handlePhotoURL();
-  },[])
+  }, []);
 
   return (
     <div className="prof-info-container">
@@ -44,18 +44,14 @@ export default function ProfInfoButton(props) {
         <div>
           <h3 style={{ marginTop: 0 }}>Professor Info</h3>
           {isPhoto ? (
-            <img 
-              className="prof-photo" 
-              src={isPhoto}
-              alt="Professor photo"
-            />
-            ): 
-            <img 
-              className="prof-photo" 
+            <img className="prof-photo" src={isPhoto} alt="Professor photo" />
+          ) : (
+            <img
+              className="prof-photo"
               src={chrome.runtime.getURL("images/default_pfp.png")}
               alt="Default profile picture"
             />
-            }
+          )}
           <p>
             <strong>Name:</strong> {fullName}
           </p>

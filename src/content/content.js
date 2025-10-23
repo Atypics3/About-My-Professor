@@ -79,12 +79,11 @@ function renderIntoPanels() {
     // also pass profile dictionary (from the API) as a property (variable) to the component
     if (uID != "jdoe") {
       root.render(
-      <React.StrictMode>
-        <ProfInfoButton apiData={profData} />
-      </React.StrictMode>,
-    );
+        <React.StrictMode>
+          <ProfInfoButton apiData={profData} />
+        </React.StrictMode>,
+      );
     }
-    
   });
 }
 
