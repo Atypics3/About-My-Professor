@@ -77,11 +77,14 @@ function renderIntoPanels() {
     // in a typical react application, you'll render the main entry point within 'root'
     // however, in our case we will render it elsewhere(our own custom 'root')
     // also pass profile dictionary (from the API) as a property (variable) to the component
-    root.render(
+    if (uID != "jdoe") {
+      root.render(
       <React.StrictMode>
         <ProfInfoButton apiData={profData} />
       </React.StrictMode>,
     );
+    }
+    
   });
 }
 
