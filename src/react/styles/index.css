@@ -42,3 +42,19 @@
   background: #fff;
   cursor: pointer;
 }
+
+.prof-photo {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+  cursor: pointer;
+}
+
+.prof-photo:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
