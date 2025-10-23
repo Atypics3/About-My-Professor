@@ -39,9 +39,8 @@ function renderIntoPanels() {
       // if the regex doesn't find a match
       if (res && res[1]) {
         name = res[1];
-      }
-      else {
-        console.log("Couldn't parse prof name for panel", panel)
+      } else {
+        console.log("Couldn't parse prof name for panel", panel);
       }
       //console.log("name from regex ",name);
     }
