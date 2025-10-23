@@ -36,7 +36,7 @@ function renderIntoPanels() {
       let text = panel.innerText;
       let res = text.match(re);
 
-      // if the regex doesn't find a match
+      // if the regex doesn't find a match - E.H
       if (res && res[1]) {
         name = res[1];
       } else {

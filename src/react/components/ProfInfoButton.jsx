@@ -34,12 +34,14 @@ export default function ProfInfoButton(props) {
             <strong>Name:</strong> {fullName}
           </p>
           <p>
+            {/* gets department from API if it exists or "Not Listed" - E.H */}
             <strong>Department:</strong>{" "}
             {props.apiData?.ucscpersonpubdepartmentnumber || "Not Listed"}
           </p>
           <p>
             <strong>Email:</strong> johndoe@ucsc.edu
           </p>{" "}
+          {/* gets office hours from API if it exists or "Not Listed" - E.H */}
           <p>
             <strong>Office Hours:</strong>{" "}
             {props.apiData?.ucscpersonpubofficehours || "Not listed"}
