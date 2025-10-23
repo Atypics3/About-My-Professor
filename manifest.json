@@ -17,5 +17,11 @@
       "js": ["content.js"],
       "all_frames": true
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["images/*"],
+      "matches": ["https://pisa.ucsc.edu/*", "https://my.ucsc.edu/*"]
+    }
   ]
 }
