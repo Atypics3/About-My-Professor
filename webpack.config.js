@@ -19,6 +19,10 @@ export default {
           from: path.resolve("manifest.json"),
           to: path.resolve("dist"),
         },
+        {
+          from: path.resolve("src/images"),
+          to: path.resolve("dist/images"),
+        },
       ],
     }),
   ],
@@ -50,6 +54,10 @@ export default {
             ],
           },
         },
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        type: "asset/resource",
       },
     ],
   },

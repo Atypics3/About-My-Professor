@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "About My Professor",
   "version": "1.0",
-  "permissions": ["storage"],
+  "permissions": ["storage", "scripting"],
   "host_permissions": [
     "https://my.ucsc.edu/*",
     "https://pisa.ucsc.edu/*",
@@ -16,6 +16,12 @@
       "matches": ["https://pisa.ucsc.edu/*", "https://my.ucsc.edu/*"],
       "js": ["content.js"],
       "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["images/*"],
+      "matches": ["https://pisa.ucsc.edu/*", "https://my.ucsc.edu/*"]
     }
   ]
 }
