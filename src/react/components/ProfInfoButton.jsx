@@ -26,7 +26,7 @@ export default function ProfInfoButton(props) {
   //useEffect so this isn't run every time page reloads
   useEffect(() => {
     //get fullname from content.js
-    // console.log(props.apiData);
+    console.log(props.apiData);
     if (props.apiData != null) {
       let name = props.apiData.cn;
       getFullName(name);
@@ -67,6 +67,33 @@ export default function ProfInfoButton(props) {
             <strong>Department:</strong>{" "}
             {props.apiData?.ucscpersonpubdepartmentnumber || "Not Listed"}
           </p>
+
+          {/* code to get div and display if different from department */}
+            {(() => {
+              const department =
+                props.apiData?.ucscpersonpubdepartmentnumber || "Not Listed";
+              const divisionArray = props.apiData?.ucscpersonpubdivision || [];
+              const division = Array.isArray(divisionArray)
+                ? divisionArray[0]
+                : divisionArray;
+
+              //normalize both before comparing
+              const norm = (s) => String(s || "").trim().toLowerCase();
+              const showDivision =
+                division && department && norm(division) !== norm(department);
+
+              return (
+                showDivision && (
+                  <p>
+                    <strong>Division:</strong> {division}
+                  </p>
+                )
+              );
+            })()}
+
+
+                    
+
           <p>
             <strong>Email:</strong> johndoe@ucsc.edu
           </p>{" "}
