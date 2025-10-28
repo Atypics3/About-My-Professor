@@ -67,33 +67,31 @@ export default function ProfInfoButton(props) {
             <strong>Department:</strong>{" "}
             {props.apiData?.ucscpersonpubdepartmentnumber || "Not Listed"}
           </p>
-
           {/* code to get div and display if different from department */}
-            {(() => {
-              const department =
-                props.apiData?.ucscpersonpubdepartmentnumber || "Not Listed";
-              const divisionArray = props.apiData?.ucscpersonpubdivision || [];
-              const division = Array.isArray(divisionArray)
-                ? divisionArray[0]
-                : divisionArray;
+          {(() => {
+            const department =
+              props.apiData?.ucscpersonpubdepartmentnumber || "Not Listed";
+            const divisionArray = props.apiData?.ucscpersonpubdivision || [];
+            const division = Array.isArray(divisionArray)
+              ? divisionArray[0]
+              : divisionArray;
 
-              //normalize both before comparing
-              const norm = (s) => String(s || "").trim().toLowerCase();
-              const showDivision =
-                division && department && norm(division) !== norm(department);
+            //normalize both before comparing
+            const norm = (s) =>
+              String(s || "")
+                .trim()
+                .toLowerCase();
+            const showDivision =
+              division && department && norm(division) !== norm(department);
 
-              return (
-                showDivision && (
-                  <p>
-                    <strong>Division:</strong> {division}
-                  </p>
-                )
-              );
-            })()}
-
-
-                    
-
+            return (
+              showDivision && (
+                <p>
+                  <strong>Division:</strong> {division}
+                </p>
+              )
+            );
+          })()}
           <p>
             <strong>Email:</strong> johndoe@ucsc.edu
           </p>{" "}
