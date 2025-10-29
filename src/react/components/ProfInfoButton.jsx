@@ -4,7 +4,6 @@ import "../styles/index.css";
 export default function ProfInfoButton(props) {
   // Track whether popup is open or closed
   const [isOpen, setIsOpen] = useState(false);
-  //get full name from api
   const [fullName, getFullName] = useState("");
   const [isPhoto, seIsPhoto] = useState("");
 
@@ -25,7 +24,7 @@ export default function ProfInfoButton(props) {
 
   //useEffect so this isn't run every time page reloads
   useEffect(() => {
-    //get fullname from content.js
+    //get fullname from content.js - B.C.
     console.log(props.apiData);
     if (props.apiData != null) {
       let name = props.apiData.cn;
@@ -62,10 +61,13 @@ export default function ProfInfoButton(props) {
           <p>
             <strong>Name:</strong> {fullName}
           </p>
+          {/*gets email and phone number from API if exists or "Not Listed" - B.C. */}
           <p>
-            {/* gets department from API if it exists or "Not Listed" - E.H */}
-            <strong>Department:</strong>{" "}
-            {props.apiData?.ucscpersonpubdepartmentnumber || "Not Listed"}
+            <strong>Email:</strong> {props.apiData?.mail || "Not listed"}
+          </p>
+          <p>
+            <strong>Phone:</strong>{" "}
+            {props.apiData?.telephonenumber || "Not listed"}
           </p>
           {/* code to get div and display if different from department */}
           {(() => {
@@ -93,8 +95,10 @@ export default function ProfInfoButton(props) {
             );
           })()}
           <p>
-            <strong>Email:</strong> johndoe@ucsc.edu
-          </p>{" "}
+            {/* gets department from API if it exists or "Not Listed" - E.H */}
+            <strong>Department:</strong>{" "}
+            {props.apiData?.ucscpersonpubdepartmentnumber || "Not Listed"}
+          </p>
           {/* gets office hours from API if it exists or "Not Listed" - E.H */}
           <p>
             <strong>Office Hours:</strong>{" "}
@@ -122,6 +126,18 @@ export default function ProfInfoButton(props) {
                 <p>
                   <strong>Courses Taught:</strong> Not listed
                 </p>
+              );
+            }
+          })()}
+          {/*code to display posted research Interests - B.C.*/}
+          {(() => {
+            const researchInterest =
+              props.apiData?.ucscpersonpubresearchinterest || "Not listed";
+            if (researchInterest != "Not listed") {
+              const rInterestHTML =
+                "<strong>Research Interests:</strong>" + researchInterest;
+              return (
+                <div dangerouslySetInnerHTML={{ __html: rInterestHTML }} />
               );
             }
           })()}
