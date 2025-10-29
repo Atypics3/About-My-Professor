@@ -100,9 +100,7 @@ export default function ProfInfoButton(props) {
             <strong>Office Hours:</strong>{" "}
             {props.apiData?.ucscpersonpubofficehours || "Not listed"}
           </p>
-
           {/* code to display courses taught by professor */}
-
           {(() => {
             const courses = props.apiData?.ucscpersonpubfacultycourses;
 
