@@ -100,6 +100,33 @@ export default function ProfInfoButton(props) {
             <strong>Office Hours:</strong>{" "}
             {props.apiData?.ucscpersonpubofficehours || "Not listed"}
           </p>
+
+          {/* code to display courses taught by professor */}
+
+          {(() => {
+            const courses = props.apiData?.ucscpersonpubfacultycourses;
+
+            if (Array.isArray(courses) && courses.length > 0) {
+              return (
+                <div>
+                  <p>
+                    <strong>Courses Taught:</strong>
+                  </p>
+                  <ul>
+                    {courses.map((course, i) => (
+                      <li key={i}>{course}</li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            } else {
+              return (
+                <p>
+                  <strong>Courses Taught:</strong> Not listed
+                </p>
+              );
+            }
+          })()}
         </div>
       )}
     </div>
