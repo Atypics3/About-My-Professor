@@ -135,7 +135,7 @@ export default function ProfInfoButton(props) {
               props.apiData?.ucscpersonpubresearchinterest || "Not listed";
             if (researchInterest != "Not listed") {
               const rInterestHTML =
-                "<strong>Research Interests:</strong>" + researchInterest;
+                "<p><strong>Research Interests:</strong>" + researchInterest + "</p>";
               return (
                 <div dangerouslySetInnerHTML={{ __html: rInterestHTML }} />
               );
