@@ -4,7 +4,6 @@ import "../styles/index.css";
 export default function ProfInfoButton(props) {
   // Track whether popup is open or closed
   const [isOpen, setIsOpen] = useState(false);
-  const [fullName, getFullName] = useState("");
   const [isPhoto, seIsPhoto] = useState("");
 
   // handles photos that are valid and invalid - I.K
@@ -22,22 +21,6 @@ export default function ProfInfoButton(props) {
     setIsOpen((prev) => !prev);
   }
 
-  //useEffect so this isn't run every time page reloads
-  useEffect(() => {
-    //get fullname from content.js - B.C.
-    console.log(props.apiData);
-    if (props.apiData != null) {
-      let name = props.apiData.cn;
-      getFullName(name);
-    } else {
-      getFullName("John Doe");
-    }
-    const name = props.apiData.cn;
-
-    getFullName(name);
-    handlePhotoURL();
-  }, []);
-
   return (
     <div className="prof-info-container">
       {/* Button to toggle popup */}
@@ -47,7 +30,8 @@ export default function ProfInfoButton(props) {
 
       {/* Popup content — only visible if `open` is true */}
       {isOpen && (
-        <div>
+        <div onLoad={handlePhotoURL}>
+          {/*tried this instead of calling it in a useEffect*/}
           <h3 style={{ marginTop: 0 }}>Professor Info</h3>
           {isPhoto ? (
             <img className="prof-photo" src={isPhoto} alt="Professor photo" />
@@ -59,9 +43,9 @@ export default function ProfInfoButton(props) {
             />
           )}
           <p>
-            <strong>Name:</strong> {fullName}
+            <strong>Name:</strong> {props.apiData?.cn || "Not listed"}
           </p>
-          {/*gets email and phone number from API if exists or "Not Listed" - B.C. */}
+          {/*gets name email and phone number from API if exists or "Not Listed" - B.C. */}
           <p>
             <strong>Email:</strong> {props.apiData?.mail || "Not listed"}
           </p>
@@ -135,7 +119,9 @@ export default function ProfInfoButton(props) {
               props.apiData?.ucscpersonpubresearchinterest || "Not listed";
             if (researchInterest != "Not listed") {
               const rInterestHTML =
-                "<p><strong>Research Interests:</strong>" + researchInterest + "</p>";
+                "<p><strong>Research Interests:</strong>" +
+                researchInterest +
+                "</p>";
               return (
                 <div dangerouslySetInnerHTML={{ __html: rInterestHTML }} />
               );
