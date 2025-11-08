@@ -30,17 +30,20 @@ function renderIntoPanels() {
 
     //get name from panel
     let name = getProfName(panel);
+    // console.log(panel.innerText) - use this instead
+    // finds "Instructor", optional "s", and whitespaces - E.H
+    const re = /Instructor[s]?:\s*([\w,.'-]+)/i;
+
+    // if the regex doesn't find a match - E.H
     if (name == null) {
-      // console.log(panel.innerText) - use this instead
-      const re = /Instructor:\n (.*)\n/;
       let text = panel.innerText;
       let res = text.match(re);
 
-      // if the regex doesn't find a match - E.H
       if (res && res[1]) {
         name = res[1];
       } else {
         console.log("Couldn't parse prof name for panel", panel);
+        return;
       }
       //console.log("name from regex ",name);
     }
@@ -69,7 +72,7 @@ function renderIntoPanels() {
         profileDict = null;
       }
     }
-    //console.log("dict: ", profileDict.data);
+
     let profData = null;
     if (profileDict != null) {
       profData = profileDict.data;
