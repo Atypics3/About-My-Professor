@@ -1,5 +1,5 @@
 // 24 hr duration in ms - E.H
-const CACHE_DURATION = 24 * 3600 * 1000
+const CACHE_DURATION = 24 * 3600 * 1000;
 
 /**
  * Main listener for messages from content.js
@@ -8,17 +8,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // check for valid IDs - E.H
   if (message.ID) {
     const uID = message.ID;
-    const storageKey = `profile_${uID}`;  // e.g. profile_jdoe
+    const storageKey = `profile_${uID}`; // e.g. profile_jdoe
 
     (async () => {
       try {
-        const cache = await chrome.storage.local.get([storageKey])
-        const cachedData = cache[storageKey]
-        const now = Date.now()
+        const cache = await chrome.storage.local.get([storageKey]);
+        const cachedData = cache[storageKey];
+        const now = Date.now();
 
         // compares difference between time when data was cached against its duration - E.H
         // if cache is valid, then send the data
-        if (cachedData && (now - cachedData.timestamp < CACHE_DURATION)) {
+        if (cachedData && now - cachedData.timestamp < CACHE_DURATION) {
           // console.log(`CACHE HIT - Using cached data for ${uID}`);
           sendResponse(cachedData.data);
           return;
@@ -30,11 +30,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const apiResponse = await fetchProfileFromAPI(uID);
 
         const dataToCache = {
-          data: apiResponse,                // data object = {data: ..., success: true}
-          timestamp: Date.now()             // current time
+          data: apiResponse, // data object = {data: ..., success: true}
+          timestamp: Date.now(), // current time
         };
 
-        await chrome.storage.local.set({ [storageKey]: dataToCache});
+        await chrome.storage.local.set({ [storageKey]: dataToCache });
 
         // 2 cases:
         // sends the data if cache has it
@@ -47,7 +47,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         sendResponse(apiResponse);
       } catch (error) {
-        console.error(`Failed to fetch profile for ${uID}`, error.message)
+        console.error(`Failed to fetch profile for ${uID}`, error.message);
         sendResponse({ data: null, success: false });
       }
     })();
@@ -57,23 +57,24 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-
 /**
  * fetchProfileFromAPI()
  * Helper function to fetch a professor's profile from the campus API
- * Fetches the API response for that profile if successful 
+ * Fetches the API response for that profile if successful
  * Or throws error if not found
  */
 async function fetchProfileFromAPI(uID) {
   try {
-    const response = await fetch("https://campusdirectory.ucsc.edu/api/uid/" + uID);
+    const response = await fetch(
+      "https://campusdirectory.ucsc.edu/api/uid/" + uID,
+    );
 
     if (!response.ok) {
       throw new Error(`API request failed with status: ${response.status}`);
     }
 
     const data = await response.json();
-    const profile = data || null; 
+    const profile = data || null;
 
     if (profile) {
       return { data: profile, success: true };
@@ -82,7 +83,7 @@ async function fetchProfileFromAPI(uID) {
       throw new Error("User not found in API response");
     }
   } catch (error) {
-     console.error(`fetchProfileFromAPI failed for ${uID}:`, error.message);
-     return { data: null, success: false };
+    console.error(`fetchProfileFromAPI failed for ${uID}:`, error.message);
+    return { data: null, success: false };
   }
 }
