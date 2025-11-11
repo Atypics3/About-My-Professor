@@ -4,15 +4,15 @@ import "../styles/index.css";
 export default function ProfInfoButton(props) {
   // Track whether popup is open or closed
   const [isOpen, setIsOpen] = useState(false);
-  const [isPhoto, seIsPhoto] = useState("");
+  const [isPhoto, setIsPhoto] = useState("");
 
   // handles photos that are valid and invalid - I.K
   function handlePhotoURL() {
     const photoURL = props.apiData.jpegphoto;
     if (photoURL && photoURL.includes("uid")) {
-      seIsPhoto(photoURL);
+      setIsPhoto(photoURL);
     } else {
-      seIsPhoto("");
+      setIsPhoto("");
     }
   }
 
