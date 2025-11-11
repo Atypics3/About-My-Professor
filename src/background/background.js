@@ -75,6 +75,14 @@ async function fetchCampusDirectoryProfile(uID) {
         timestamp: Date.now(),
       },
     });
+    // 2 cases:
+    // sends the data if cache has it
+    // or sends the error message for an API failure         - E.H
+    // if (apiResponse.success) {
+    //   console.log(`CACHE SAVED - Data saved for ${uID}`);
+    // } else {
+    //   console.log(`CACHE ERROR - API failure for ${uID}.`);
+    // }
     return apiResponse;
   } catch (error) {
     console.error(`Failed to fetch campus directory profile for ${uID}`, error);
