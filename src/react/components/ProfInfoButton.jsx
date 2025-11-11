@@ -4,7 +4,7 @@ import "../styles/index.css";
 export default function ProfInfoButton(props) {
   // Track whether popup is open or closed
   const [isOpen, setIsOpen] = useState(false);
-  const [isPhoto, seIsPhoto] = useState("");
+  const [isPhoto, setIsPhoto] = useState("");
 
   // rate my professor data - I.K
   const rateMyProfessor = props.rateMyProfessor;
@@ -76,9 +76,9 @@ export default function ProfInfoButton(props) {
   function handlePhotoURL() {
     const photoURL = props.apiData.jpegphoto;
     if (photoURL && photoURL.includes("uid")) {
-      seIsPhoto(photoURL);
+      setIsPhoto(photoURL);
     } else {
-      seIsPhoto("");
+      setIsPhoto("");
     }
   }
 
