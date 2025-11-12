@@ -17,8 +17,12 @@ function getProfName(panel) {
   return null; // if name isn't found for whatever reason
 }
 
-async function getProfileDict(uID) {
-  return chrome.runtime.sendMessage({ ID: uID });
+async function getProfessorData(uID, name) {
+  return chrome.runtime.sendMessage({
+    action: "fetchProfessorData",
+    ID: uID,
+    name,
+  });
 }
 
 function renderIntoPanels() {
@@ -48,34 +52,68 @@ function renderIntoPanels() {
       //console.log("name from regex ",name);
     }
 
+    // //get uID from json
+    // let uID = "jdoe";
+    // //console.log(data);
+    // //get uID by indexing the json data as a dictionary
+    // if (data[name]) {
+    //   uID = data[name];
+    // } else {
+    //   console.log(
+    //     "couldn't match name to uID in the json, gave output",
+    //     data[name],
+    //     "for name: ",
+    //     name,
+    //   );
+    // }
+    //console.log(uID);
+
     //get uID from json
     let uID = "jdoe";
-    //console.log(data);
-    //get uID by indexing the json data as a dictionary
     if (data[name]) {
-      uID = data[name];
+      const value = String(data[name]); // Get the value, e.g., "https://...uid=chern133"
+
+      // Use regex to find 'uid=' and capture what's after it
+      const uidMatch = value.match(/uid=([\w-]+)/);
+
+      if (uidMatch && uidMatch[1]) {
+        // Found a match! e.g., uidMatch[1] is "chern133"
+        uID = uidMatch[1];
+      } else if (!value.includes("http")) {
+        // Fallback: The value might already be a clean UID
+        uID = value;
+      } else {
+        // The value was a bad URL or something we couldn't parse
+        console.log(
+          `Found invalid UID value for ${name}: ${value}`
+        );
+      }
     } else {
       console.log(
-        "couldn't match name to uID in the json, gave output",
-        data[name],
-        "for name: ",
-        name,
+        `Couldn't match name to uID in the json for name: ${name}`
       );
     }
-    //console.log(uID);
 
     //get fullName from API
     let profileDict = null;
     if (uID != "jdoe") {
-      profileDict = await getProfileDict(uID);
-      if (profileDict.data.success == false) {
+      try {
+        profileDict = await getProfessorData(uID, name);
+      } catch (error) {
+        console.error("Error fetching professor data", error);
         profileDict = null;
       }
+      if (profileDict?.data?.success === false) {
+        profileDict.data = null;
+      }
     }
+    //console.log("dict: ", profileDict?.data);
 
     let profData = null;
+    let rateMyProfessorData = null;
     if (profileDict != null) {
       profData = profileDict.data;
+      rateMyProfessorData = profileDict.rateMyProfessor;
     }
 
     const mount = document.createElement("div");
@@ -89,7 +127,7 @@ function renderIntoPanels() {
     if (uID != "jdoe") {
       root.render(
         <React.StrictMode>
-          <ProfInfoButton apiData={profData} />
+          <ProfInfoButton apiData={profData} rateMyProfessor={rateMyProfessorData} />
         </React.StrictMode>,
       );
     }
