@@ -152,14 +152,14 @@ export default function ProfInfoButton(props) {
             <div className="prof-info-header">
               <h3 className="prof-info-title">Professor Info</h3>
               <button className="prof-info-close" onClick={handleOpen}>
-                Close
+                X
               </button>
             </div>
 
             {/* AMP section */}
             <div className="campus-card">
               <div className="campus-card-header">
-                <h4>Campus Directory</h4>
+                <h4>About the Professor</h4>
               </div>
               <div className="campus-card-hero">
                 {isPhoto ? (
@@ -219,7 +219,7 @@ export default function ProfInfoButton(props) {
                   {/* Courses Taught */}
                   {Array.isArray(courses) && courses.length > 0 && (
                     <div className="campus-card-section">
-                      <h6>Courses Taught</h6>
+                      <p><strong>Courses Taught:</strong></p>
                       <ul>
                         {courses.map((course, i) => (
                           <li key={i}>{course}</li>

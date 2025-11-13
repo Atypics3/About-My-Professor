@@ -118,7 +118,17 @@ function renderIntoPanels() {
 
     const mount = document.createElement("div");
     mount.className = "about-my-professor-root";
-    panel.appendChild(mount);
+    // panel.appendChild(mount);
+    const columns = panel.querySelectorAll("div.col-xs-6.col-sm-3");
+    if (columns.length > 0) {
+      // Get the last column (which contains "In Person")
+      const lastColumn = columns[columns.length - 1];
+      // Append the button container inside it
+      lastColumn.appendChild(mount);
+    } else {
+      // Fallback in case the structure is different
+      panel.appendChild(mount);
+    }
     const root = createRoot(mount);
 
     // in a typical react application, you'll render the main entry point within 'root'

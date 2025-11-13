@@ -5,8 +5,8 @@
 /* --- ProfInfoButton styles --- */
 
 .prof-info-container {
-  margin-top: 8px;
-  margin-left: 18px;
+  margin-top: 10px;
+  margin-bottom: 5px;
 }
 
 .prof-info-btn {
@@ -30,15 +30,21 @@
   box-shadow: 0 12px 24px rgba(79, 70, 229, 0.25);
 }
 
+/* Modal properties */
+
 .prof-info-modal-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
   background: rgba(15, 23, 42, 0.45);
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
   padding: 32px 36px;
-  z-index: 2147483000;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .prof-info-modal {
@@ -53,7 +59,6 @@
     0 4px 16px rgba(15, 23, 42, 0.12);
   border: 1px solid rgba(226, 232, 240, 0.8);
   position: relative;
-  animation: prof-info-fade-in 160ms ease-out;
 }
 
 .prof-info-header {
@@ -179,6 +184,8 @@
   border-top: 1px solid rgba(226, 232, 240, 0.9);
 }
 
+/* the component for the More Info modal */
+
 .campus-card {
   background: linear-gradient(165deg, #ffffff 0%, #f8fafc 65%);
   border-radius: 18px;
@@ -281,15 +288,6 @@
 
 .campus-card-section {
   padding-top: 16px;
-  border-top: 1px solid rgba(226, 232, 240, 0.7);
-}
-
-.campus-card-section h6 {
-  margin: 0 0 10px;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #475569;
 }
 
 .campus-card-section ul {
