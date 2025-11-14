@@ -101,7 +101,10 @@ function renderIntoPanels() {
     if (uID != "jdoe") {
       root.render(
         <React.StrictMode>
-          <ProfInfoButton apiData={profData} rateMyProfessor={rateMyProfessorData} />
+          <ProfInfoButton
+            apiData={profData}
+            rateMyProfessor={rateMyProfessorData}
+          />
         </React.StrictMode>,
       );
     }

@@ -43,7 +43,9 @@ const CACHE_DURATION = 24 * 3600 * 1000; // 24 hours
 async function fetchProfileFromAPI(uID) {
   const response = await fetch(`${CAMPUS_DIRECTORY_BASE_URL}${uID}`);
   if (!response.ok) {
-    throw new Error(`Campus directory request failed with status ${response.status}`);
+    throw new Error(
+      `Campus directory request failed with status ${response.status}`,
+    );
   }
 
   const data = await response.json();
@@ -133,7 +135,9 @@ async function fetchRateMyProfessorData(name, schoolId) {
   }
 
   if (!response.ok) {
-    throw new Error(`RateMyProfessors request failed with status ${response.status}`);
+    throw new Error(
+      `RateMyProfessors request failed with status ${response.status}`,
+    );
   }
 
   const payload = await response.json();
@@ -166,10 +170,7 @@ function createSearchTokens(node) {
     }
 
     // compact versions without spaces or punctuation
-    const compact = (value) =>
-      value
-        .replace(/[^a-zA-Z]/g, "")
-        .toLowerCase();
+    const compact = (value) => value.replace(/[^a-zA-Z]/g, "").toLowerCase();
     if (fullName) tokens.push(compact(fullName));
     if (reversedName) tokens.push(compact(reversedName));
     if (initials && last) tokens.push(compact(`${last}${initials}`));
