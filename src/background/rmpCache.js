@@ -115,13 +115,13 @@ function createSearchTokens(node) {
 /**
  * Uses Fuse.js fuzzy search to find the best RMP match for a given name.
  * @param {Array} edges - The list of professor "edges" from the RMP API.
- * @param {string} name - The name we are searching for (e.g., "TANTALO,C").
+ * @param {string} name - The name we are searching for (e.g., "TANTALO,P").
  * @returns {object|null} The best matching professor node, or null.
  */
+// gets the best match by using fuzzy search - I.K
 export function selectBestRmpMatch(edges, name) {
   if (!Array.isArray(edges) || edges.length === 0) return null;
 
-  // Enhance each candidate with a list of searchable tokens
   const candidates = edges
     .map((edge) => edge?.node)
     .filter(Boolean)
@@ -131,14 +131,13 @@ export function selectBestRmpMatch(edges, name) {
     }));
 
   if (candidates.length === 0) return null;
-  if (!name) return candidates[0]; // Just return the first if no name is provided
+  if (!name) return candidates[0];
 
-  // Initialize Fuse.js for fuzzy searching
   const fuse = new Fuse(candidates, {
     includeScore: true,
     shouldSort: true,
     threshold: 0.35,
-    keys: ["searchTokens"], // Search within our generated tokens
+    keys: ["searchTokens"],
   });
 
   const formattedName = buildRmpQueryVariables(name)?.text || "";
@@ -151,7 +150,6 @@ export function selectBestRmpMatch(edges, name) {
       .toLowerCase()
       .replace(/[^a-z]/g, "");
 
-  // Try fuzzy search first
   for (const term of searchTerms) {
     const results = fuse.search(term);
     if (results.length > 0) {
@@ -162,7 +160,7 @@ export function selectBestRmpMatch(edges, name) {
     }
   }
 
-  // Fallback to a direct, normalized comparison
+  // fallback to direct normalized comparison
   const target = normalizeForFallback(searchTerms[0] || name);
   const fallbackMatch = candidates.find((candidate) => {
     const comparisonValues = (candidate.searchTokens || []).map((token) =>
@@ -172,18 +170,18 @@ export function selectBestRmpMatch(edges, name) {
   });
   if (fallbackMatch) return fallbackMatch;
 
-  // If no good match, return the top result from the API
   return candidates[0];
 }
 
 /**
- * Fetches data directly from the RateMyProfessors GraphQL endpoint.
- * This function does NOT use the cache.
- * @param {string} name - The professor's name.
+ * A cached wrapper for the RateMyProfessors API.
+ * Fetches rmp data given a prof name and the school id - I.K
+ * @param {string} uID - The professor's User ID (used for the cache key).
+ * @param {string} name - The professor's name (e.g., "TANTALO,P").
  * @param {string} schoolId - The RMP school ID.
  * @returns {Promise<Array|null>} A list of matching professor "edges" or null.
  */
-async function fetchRateMyProfessorData(name, schoolId) {
+export async function fetchRateMyProfessorData(name, schoolId) {
   if (!name) return null;
 
   const variables = buildRmpQueryVariables(name, schoolId);

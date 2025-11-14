@@ -45,14 +45,11 @@ function StarRating({ rating, numRatings }) {
   );
 }
 
-/**
- * The main React component for the "Professor Info" button
- * and its modal popup.
- */
 export default function ProfInfoButton(props) {
   // Track whether popup is open or closed
   const [isOpen, setIsOpen] = useState(false);
   const [isPhoto, setIsPhoto] = useState("");
+  const [showMoreInfo, setShowMoreInfo] = useState(false);
 
   // rate my professor data - I.K
   const rateMyProfessor = props.rateMyProfessor;
@@ -69,69 +66,83 @@ export default function ProfInfoButton(props) {
     : [];
   const topTags = ratingTags.slice(0, 4);
 
+  // --- RMP Helper Functions ---
   const toNumber = (value) => {
     const num = typeof value === "number" ? value : parseFloat(value);
     return Number.isFinite(num) ? num : null;
   };
+
   const roundToWhole = (value) => {
     const num = toNumber(value);
     return num != null ? Math.round(num) : null;
   };
 
+  const roundToOneDecimal = (value) => {
+    const num = toNumber(value);
+    return num != null ? Math.round(num * 10) / 10 : null;
+  };
+
   const roundedRating = roundToWhole(rating);
+
+  // covers case where additional decimals aren't truncated appropriately (e.g. 3.8000...)
+  const roundedDifficulty = roundToOneDecimal(avgDifficulty);
+
   const roundedWouldTakeAgain = roundToWhole(wouldTakeAgain);
-  const name = props.apiData?.cn ?? "Not listed";
-  const email =
-    typeof props.apiData?.mail === "string" && props.apiData.mail.trim()
-      ? props.apiData.mail.trim()
-      : null;
-  const phone =
-    typeof props.apiData?.telephonenumber === "string" &&
-    props.apiData.telephonenumber.trim()
-      ? props.apiData.telephonenumber.trim()
-      : null;
-  const departmentRaw =
-    typeof props.apiData?.ucscpersonpubdepartmentnumber === "string"
-      ? props.apiData.ucscpersonpubdepartmentnumber.trim()
-      : "";
-  const department = departmentRaw || null;
-  const divisionArray = props.apiData?.ucscpersonpubdivision || [];
-  const divisionValue = (() => {
-    const raw = Array.isArray(divisionArray) ? divisionArray[0] : divisionArray;
-    if (typeof raw === "string" && raw.trim()) {
-      return raw.trim();
-    }
-    return null;
-  })();
-  const officeHours =
-    typeof props.apiData?.ucscpersonpubofficehours === "string" &&
-    props.apiData.ucscpersonpubofficehours.trim()
-      ? props.apiData.ucscpersonpubofficehours.trim()
-      : null;
-  const courses = props.apiData?.ucscpersonpubfacultycourses;
+
+  // --- Process Campus Directory Data ---
+  const name = getFirst(props.apiData?.cn) || "Not Listed";
+  const email = getFirst(props.apiData?.mail);
+  const phone = getFirst(props.apiData?.telephonenumber) || "Not Listed";
+  const department = getFirst(props.apiData?.ucscpersonpubdepartmentnumber);
+  const divisionValue = getFirst(props.apiData?.ucscpersonpubdivision);
+  const officeHours = getFirst(props.apiData?.ucscpersonpubofficehours);
+  const researchInterest = getFirst(
+    props.apiData?.ucscpersonpubresearchinterest,
+  ); // assumes this is not an array/string to be trimmed
+  const courses = props.apiData?.ucscpersonpubfacultycourses; // assumes this is already an array
+
   const normalize = (value) =>
     String(value || "")
       .trim()
       .toLowerCase();
+
+  // Logic to only show division if it's different from the department
   const showDivision =
     divisionValue &&
     department &&
     normalize(divisionValue) !== normalize(department);
+
+  // A clean list of contact details for the grid
   const detailItems = [
     email && { label: "Email", value: email, href: `mailto:${email}` },
     phone && { label: "Phone", value: phone, href: `tel:${phone}` },
-    officeHours && { label: "Office Hours", value: officeHours },
   ].filter(Boolean);
 
-  // handles photos that are valid and invalid - I.K
-  function handlePhotoURL() {
-    const photoURL = props.apiData.jpegphoto;
-    if (photoURL && photoURL.includes("uid")) {
-      setIsPhoto(photoURL);
+  // Logic to determine if the "More Info" button should even exist - E.H
+  // the field either has to have a valid type or null
+  const hasMoreInfo =
+    Boolean(officeHours) ||
+    (Array.isArray(courses) && courses.length > 0) ||
+    Boolean(researchInterest);
+
+  /**
+   * handles photos that are valid and invalid - I.K
+   * Wrapped in useCallback to stabilize it for the useEffect hook.
+   * Using useCallBack for more efficient rendering (it memoizes handlePhotoURL)
+   * https://stackoverflow.com/questions/71265042/what-is-usecallback-in-react-and-when-to-use-it  - E.H
+   */
+  const handlePhotoURL = useCallback(() => {
+    if (props.apiData) {
+      const photoURL = props.apiData.jpegphoto;
+      if (photoURL && photoURL.includes("uid")) {
+        setIsPhoto(photoURL);
+      } else {
+        setIsPhoto("");
+      }
     } else {
       setIsPhoto("");
     }
-  }
+  }, [props.apiData]); // This function now only changes if apiData changes
 
   /**
    * Handles opening and closing of pop up - I.K
@@ -139,25 +150,68 @@ export default function ProfInfoButton(props) {
    */
   function handleOpen() {
     setIsOpen((prev) => !prev);
-  }
 
-  function handleOverlayClick(event) {
-    if (event.target === event.currentTarget) {
-      setIsOpen(false);
+    if (isOpen) {
+      setShowMoreInfo(false);
     }
   }
 
+  /**
+   * Toggles the "More Info" collapsible section.
+   */
+  function handleToggleMoreInfo(e) {
+    // Stop the click from closing the whole modal
+    // if the button is ever inside the click overlay  - E.H
+    e.stopPropagation();
+    setShowMoreInfo((prev) => !prev);
+  }
+
+  /**
+   * Effect hook to load the professor's photo only when the modal is opened and we have data.  - E.H
+   */
   useEffect(() => {
     if (isOpen) {
       handlePhotoURL();
     }
-  }, [isOpen, props.apiData]);
+  }, [isOpen, handlePhotoURL]); // Runs when 'isOpen' or 'handlePhotoURL' changes
+
+  function handleOverlayClick(event) {
+    if (event.target === event.currentTarget) {
+      setIsOpen(false);
+      setShowMoreInfo(false); // also reset on overlay click
+    }
+  }
+
+  // This component won't render anything if it doesn't get apiData
+  if (!props.apiData) {
+    return null;
+  }
+
+  // When the modal is open, we add the 'prof-is-open' class to the
+  // main container. This gives it a higher z-index (1001)
+  // so it appears *above* the overlay and all other buttons.  - E.H
+  const containerClass = isOpen
+    ? "prof-info-container prof-is-open"
+    : "prof-info-container";
 
   return (
     <div className={containerClass}>
       {/* Button to toggle popup */}
       <button className="prof-info-btn" onClick={handleOpen}>
-        {isOpen ? "Hide Professor Info" : "Show Professor Info"}
+        {/* SVG Icon */}
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="3" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
       </button>
 
       {/* Popup content — only visible if `open` is true */}
@@ -167,20 +221,18 @@ export default function ProfInfoButton(props) {
             <div className="prof-info-header">
               <h3 className="prof-info-title">Professor Info</h3>
               <button className="prof-info-close" onClick={handleOpen}>
-                Close
+                X
               </button>
             </div>
+
+            {/* AMP section */}
             <div className="campus-card">
               <div className="campus-card-header">
-                <h4>Campus Directory</h4>
+                <h4>About the Professor</h4>
               </div>
               <div className="campus-card-hero">
                 {isPhoto ? (
-                  <img
-                    className="prof-photo"
-                    src={isPhoto}
-                    alt="Professor photo"
-                  />
+                  <img className="prof-photo" src={isPhoto} alt="Professor photo" />
                 ) : (
                   <img
                     className="prof-photo"
@@ -191,17 +243,15 @@ export default function ProfInfoButton(props) {
                 <div className="campus-card-hero-text">
                   <h5>{name}</h5>
                   <div className="campus-chip-row">
-                    {department && (
-                      <span className="campus-chip">{department}</span>
-                    )}
+                    {department && <span className="campus-chip">{department}</span>}
                     {showDivision && (
-                      <span className="campus-chip subtle">
-                        {divisionValue}
-                      </span>
+                      <span className="campus-chip subtle">{divisionValue}</span>
                     )}
                   </div>
                 </div>
               </div>
+              
+              {/* campus card section */}
               {detailItems.length > 0 && (
                 <div className="campus-card-grid">
                   {detailItems.map((item) => (
@@ -218,37 +268,55 @@ export default function ProfInfoButton(props) {
                   ))}
                 </div>
               )}
-              {Array.isArray(courses) && courses.length > 0 && (
-                <div className="campus-card-section">
-                  <h6>Courses Taught</h6>
-                  <ul>
-                    {courses.map((course, i) => (
-                      <li key={i}>{course}</li>
-                    ))}
-                  </ul>
+
+              {/* More Info button */}
+              {hasMoreInfo && (
+                <button className="prof-info-more-btn" onClick={handleToggleMoreInfo}>
+                  {showMoreInfo ? "Show Less" : "More Info"}
+                </button>
+              )}
+
+
+              {/* --- Collapsible More Info Section --- */}
+              {showMoreInfo && (
+                <div className="prof-info-more-section">
+                  {/* Office Hours */}
+                  {officeHours && (
+                     <div className="campus-card-section">
+                        <p><strong>Office Hours:</strong> {officeHours}</p>
+                     </div>
+                  )}
+
+                  {/* Courses Taught */}
+                  {Array.isArray(courses) && courses.length > 0 && (
+                    <div className="campus-card-section">
+                      <p><strong>Courses Taught:</strong></p>
+                      <ul>
+                        {courses.map((course, i) => (
+                          <li key={i}>{course}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Research Interest */}
+                   {(() => {
+                      if (typeof researchInterest === "string" && researchInterest.trim()) {
+                        const rInterestHTML =
+                          "<p><strong>Research Interests: </strong>" + researchInterest + "</p>";
+                        return (
+                          <div
+                            className="campus-card-section"
+                            dangerouslySetInnerHTML={{ __html: rInterestHTML }}
+                          />
+                        );
+                      }
+                    })()}
                 </div>
               )}
-              {(() => {
-                const researchInterest =
-                  props.apiData?.ucscpersonpubresearchinterest;
-                if (
-                  typeof researchInterest === "string" &&
-                  researchInterest.trim()
-                ) {
-                  const rInterestHTML =
-                    "<p><strong>Research Interests:</strong>" +
-                    researchInterest +
-                    "</p>";
-                  return (
-                    <div
-                      className="campus-card-section"
-                      dangerouslySetInnerHTML={{ __html: rInterestHTML }}
-                    />
-                  );
-                }
-              })()}
             </div>
 
+            {/* RMP section */}
             <div className="rmp-section">
               {rateMyProfessor ? (
                 <div className="rmp-card">
@@ -260,47 +328,53 @@ export default function ProfInfoButton(props) {
                       </a>
                     )}
                   </div>
+
                   <div className="rmp-card-grid">
+                    {/* stars rating */}
                     <div className="rmp-metric rating">
                       <span className="metric-label">Rating</span>
-                      <span className="metric-value">
-                        {roundedRating != null ? `${roundedRating}/5` : "N/A"}
-                      </span>
+                      {/* Use the new StarRating component */}
+                      <StarRating rating={roundedRating} numRatings={numRatings} />
                       <span className="metric-sub">Average score</span>
                     </div>
+
+                    {/* difficulty */}
                     <div className="rmp-metric difficulty">
                       <span className="metric-label">Difficulty</span>
                       <span className="metric-value">
-                        {avgDifficulty != null ? `${avgDifficulty}/5` : "N/A"}
+                        {roundedDifficulty != null ? `${roundedDifficulty}/5` : "N/A"}
                       </span>
                       <span className="metric-sub">Avg difficulty</span>
                     </div>
+
+                    {/* would take */}
                     <div className="rmp-metric would-take">
                       <span className="metric-label">Would Take Again</span>
                       <span className="metric-value">
-                        {roundedWouldTakeAgain != null
+                          {roundedWouldTakeAgain != null && numRatings > 0
                           ? `${roundedWouldTakeAgain}%`
                           : "N/A"}
                       </span>
                       <span className="metric-sub">Student approval</span>
                     </div>
+
+                    {/* total ratings */}
                     <div className="rmp-metric total-ratings">
-                      <span className="metric-label">Ratings</span>
+                      <span className="metric-label">Reviews</span>
                       <span className="metric-value">
-                        {numRatings != null ? numRatings : "N/A"}
+                        {roundedWouldTakeAgain != null ? numRatings : "N/A"}
                       </span>
                       <span className="metric-sub">Total reviews</span>
                     </div>
                   </div>
+
+                  {/* top tags */}
                   {topTags.length > 0 && (
                     <div className="rmp-tags">
                       <span className="tags-label">Top Tags</span>
                       <div className="tags-grid">
                         {topTags.map((tag) => (
-                          <span
-                            className="tag-chip"
-                            key={tag.id || tag.legacyId}
-                          >
+                          <span className="tag-chip" key={tag.id || tag.legacyId}>
                             <span className="tag-name">{tag.tagName}</span>
                             <span className="tag-count">{tag.tagCount}</span>
                           </span>
@@ -308,16 +382,18 @@ export default function ProfInfoButton(props) {
                       </div>
                     </div>
                   )}
+
                 </div>
               ) : (
+
+                // empty state
                 <div className="rmp-card empty">
                   <div className="rmp-card-header">
                     <h4>Rate My Professors</h4>
                   </div>
-                  <p className="rmp-empty">
-                    Rate My Professors data not available.
-                  </p>
+                  <p className="rmp-empty">Rate My Professors data not available.</p>
                 </div>
+
               )}
             </div>
           </div>
