@@ -138,11 +138,29 @@ export default function ProfInfoButton(props) {
     return null;
   }
 
+  // Add the 'prof-is-open' class to the container when the modal is open
+  const containerClass = isOpen 
+    ? "prof-info-container prof-is-open" 
+    : "prof-info-container";
+
   return (
-    <div className="prof-info-container">
+    <div className={containerClass}>
       {/* Button to toggle popup */}
       <button className="prof-info-btn" onClick={handleOpen}>
-        {isOpen ? "Hide Professor Info" : "Show Professor Info"}
+        {/* SVG Icon */}
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="3" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
       </button>
 
       {/* Popup content — only visible if `open` is true */}

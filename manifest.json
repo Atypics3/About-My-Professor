@@ -6,7 +6,8 @@
   "host_permissions": [
     "https://my.ucsc.edu/*",
     "https://pisa.ucsc.edu/*",
-    "https://campusdirectory.ucsc.edu/*"
+    "https://campusdirectory.ucsc.edu/*",
+    "https://www.ratemyprofessors.com/graphql"
   ],
   "background": {
     "service_worker": "background.js"
