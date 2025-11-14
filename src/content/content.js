@@ -17,8 +17,12 @@ function getProfName(panel) {
   return null; // if name isn't found for whatever reason
 }
 
-async function getProfileDict(uID) {
-  return chrome.runtime.sendMessage({ ID: uID });
+async function getProfessorData(uID, name) {
+  return chrome.runtime.sendMessage({
+    action: "fetchProfessorData",
+    ID: uID,
+    name,
+  });
 }
 
 function renderIntoPanels() {
@@ -67,15 +71,23 @@ function renderIntoPanels() {
     //get fullName from API
     let profileDict = null;
     if (uID != "jdoe") {
-      profileDict = await getProfileDict(uID);
-      if (profileDict.data.success == false) {
+      try {
+        profileDict = await getProfessorData(uID, name);
+      } catch (error) {
+        console.error("Error fetching professor data", error);
         profileDict = null;
       }
+      if (profileDict?.data?.success === false) {
+        profileDict.data = null;
+      }
     }
+    //console.log("dict: ", profileDict?.data);
 
     let profData = null;
+    let rateMyProfessorData = null;
     if (profileDict != null) {
       profData = profileDict.data;
+      rateMyProfessorData = profileDict.rateMyProfessor;
     }
 
     const mount = document.createElement("div");
@@ -89,7 +101,10 @@ function renderIntoPanels() {
     if (uID != "jdoe") {
       root.render(
         <React.StrictMode>
-          <ProfInfoButton apiData={profData} />
+          <ProfInfoButton
+            apiData={profData}
+            rateMyProfessor={rateMyProfessorData}
+          />
         </React.StrictMode>,
       );
     }
