@@ -1,8 +1,12 @@
+/*
+ * ==========================================
+ * AMP AND RMP STYLES
+ * ==========================================
+ */
+
 .prof-card {
   color: red;
 }
-
-/* --- ProfInfoButton styles --- */
 
 .prof-info-container {
   position: absolute;
@@ -21,14 +25,12 @@
 
 
 .prof-info-btn {
-  /* Resetting old styles */
   text-transform: none;
   font-size: 14px;
   font-weight: 600;
   padding: 0;
   margin: 0;
   
-  /* New Icon Styles */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -453,6 +455,36 @@
   color: #64748b;
 }
 
+
+/* text colors for difficulty, and would-take */
+.rmp-metric.difficulty .metric-value { color: #d0021b; }
+.rmp-metric.would-take .metric-value { color: #2ecc36; }
+
+/* star ratings */
+.star-rating {
+  display: flex;
+  align-items: center;
+  /* Use the same font size as metric-value for N/A text */
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+}
+.star-rating svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 2px;
+}
+.star-filled {
+  fill: #ecf545;
+  stroke: #000000;
+}
+.star-empty {
+  fill: none;
+  stroke: #ccc; /* Empty star color */
+  stroke-width: 1.5;
+}
+
+/* top tags */
 .rmp-tags {
   display: flex;
   flex-direction: column;
@@ -500,6 +532,44 @@
   font-style: italic;
 }
 
+
+/*
+ * ==========================================
+ * RESPONSIVE MODAL STYLES
+ * ==========================================
+ */
+ @media (max-width: 768px) {
+  .prof-info-modal-overlay {
+    align-items: flex-end;
+  }
+
+  .prof-info-modal {
+    flex-direction: column; 
+    width: 100%;
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 12px 12px 0 0; 
+    animation: slideInUp 0.3s ease-out;
+  }
+
+  .campus-card,
+  .rmp-section {
+    flex-basis: auto;
+    overflow-y: visible;
+  }
+
+  .rmp-section {
+    border-left: none;
+    border-top: 8px solid #e1e4e8;
+  }
+}
+
+
+/*
+ * ==========================================
+ * KEYFRAME ANIMATIONS
+ * ==========================================
+ */
 @keyframes prof-info-fade-in {
   from {
     opacity: 0;

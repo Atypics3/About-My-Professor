@@ -3,6 +3,12 @@ import { createRoot } from "react-dom/client";
 import ProfInfoButton from "../react/components/ProfInfoButton.jsx";
 import data from "../data/prof_uids.json";
 
+/**
+ * Scrapes the professor's name from a specific, known HTML structure
+ * in a class panel.
+ * @param {Element} panel - The DOM element for a single course panel.
+ * @returns {string | null} The professor's name (e.g., "TANTALO,C") or null if not found.
+ */
 function getProfName(panel) {
   const profDivs = panel.querySelectorAll("div.col-xs-6.col-sm-3");
 
@@ -17,6 +23,13 @@ function getProfName(panel) {
   return null; // if name isn't found for whatever reason
 }
 
+/**
+ * Sends a message to the background script to fetch all professor data
+ * (both from the Campus Directory and RateMyProfessors).
+ * @param {string} uID - The professor's User ID (e.g., "pdey").
+ * @param {string} name - The professor's name from the panel (e.g., "DEY,P.").
+ * @returns {Promise<object>} A promise that resolves with the complete profile object.
+ */
 async function getProfessorData(uID, name) {
   return chrome.runtime.sendMessage({
     action: "fetchProfessorData",
@@ -25,11 +38,17 @@ async function getProfessorData(uID, name) {
   });
 }
 
-function renderIntoPanels() {
+/**
+ * Main function to find all course panels on the page and inject
+ * the React info-button component into each one.
+ * This function is 'async' because it must 'await' the API
+ * response from the background script for each panel.
+ */
+async function renderIntoPanels() {
   const panels = document.querySelectorAll(".panel.panel-default.row");
   if (!panels || panels.length === 0) return;
 
-  panels.forEach(async (panel) => {
+  for (const panel of panels) {
     if (panel.querySelector(".about-my-professor-root")) return; // avoid duplicate mounts(will come in handy when we cache the results)
 
     //get name from panel
@@ -116,19 +135,36 @@ function renderIntoPanels() {
       rateMyProfessorData = profileDict.rateMyProfessor;
     }
 
-    const mount = document.createElement("div");
+    // Find the main course title header (the <h2>)
+    const targetPanel = panel;
+
+    const mount = document.createElement("span");
     mount.className = "about-my-professor-root";
-    // panel.appendChild(mount);
-    const columns = panel.querySelectorAll("div.col-xs-6.col-sm-3");
-    if (columns.length > 0) {
-      // Get the last column (which contains "In Person")
-      const lastColumn = columns[columns.length - 1];
-      // Append the button container inside it
-      lastColumn.appendChild(mount);
-    } else {
-      // Fallback in case the structure is different
-      panel.appendChild(mount);
+
+    // 2. Add a class to the panel itself so we can use 'position: relative'
+    targetPanel.classList.add("prof-panel-relative");
+    targetPanel.appendChild(mount);
+    
+    // 3. Find the <h2> and *remove* the flex class if it's there
+    const targetHeader = panel.querySelector("h2");
+    if (targetHeader) {
+      targetHeader.classList.remove("prof-info-header-flex");
     }
+
+    /** Keeping old placement just in case we want it back  - E.H */
+    // const mount = document.createElement("div");
+    // mount.className = "about-my-professor-root";
+    // // panel.appendChild(mount);
+    // const columns = panel.querySelectorAll("div.col-xs-6.col-sm-3");
+    // if (columns.length > 0) {
+    //   // Get the last column (which contains "In Person")
+    //   const lastColumn = columns[columns.length - 1];
+    //   // Append the button container inside it
+    //   lastColumn.appendChild(mount);
+    // } else {
+    //   // Fallback in case the structure is different
+    //   panel.appendChild(mount);
+    // }
     const root = createRoot(mount);
 
     // in a typical react application, you'll render the main entry point within 'root'
@@ -141,7 +177,7 @@ function renderIntoPanels() {
         </React.StrictMode>,
       );
     }
-  });
+  };
 }
 
 // Initial attempt after a short delay for the iframe

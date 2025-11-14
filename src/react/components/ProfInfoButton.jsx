@@ -1,6 +1,56 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "../styles/index.css";
 
+
+/**
+ * Helper function to safely get the first trimmed item from a property
+ * that could be a string or an array.
+ * @param {*} value - The value to parse (e.g., [" John "] or " John ")
+ * @returns {string|null} The trimmed string or null.
+ */
+const getFirst = (value) => {
+  if (Array.isArray(value) && value.length > 0) {
+    return value[0].trim() || null;
+  }
+  if (typeof value === 'string') {
+    return value.trim() || null;
+  }
+  return null;
+};
+
+/**
+ * A new component to render a 5-star rating.
+ * @param {object} props - Component props.
+ * @param {number} props.rating - The rating number (0-5).
+ * @param {number} props.numRatings - The total number of ratings.
+ */
+function StarRating({ rating, numRatings }) {
+  // If rating is null or there are no ratings, display "N/A"
+  if (rating == null || numRatings === 0) {
+    return <span className="metric-value">N/A</span>;
+  }
+
+  return (
+    <div className="star-rating">
+      {[...Array(5)].map((_, index) => (
+        <svg
+          key={index}
+          className={index < rating ? "star-filled" : "star-empty"}
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M12 17.27L18.18 21 16.54 13.97 22 9.24 14.81 8.63 12 2 9.19 8.63 2 9.24 7.46 13.97 5.82 21 12 17.27z" />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+
+/**
+ * The main React component for the "Professor Info" button
+ * and its modal popup.
+ */
 export default function ProfInfoButton(props) {
   // Track whether popup is open or closed
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +72,8 @@ export default function ProfInfoButton(props) {
     : [];
   const topTags = ratingTags.slice(0, 4);
 
+
+  // --- RMP Helper Functions ---
   const toNumber = (value) => {
     const num = typeof value === "number" ? value : parseFloat(value);
     return Number.isFinite(num) ? num : null;
@@ -44,18 +96,8 @@ export default function ProfInfoButton(props) {
 
   const roundedWouldTakeAgain = roundToWhole(wouldTakeAgain);
 
-  // Helper to get the first trimmed item from a string or array, or null  - E.H
-  const getFirst = (value) => {
-    if (Array.isArray(value) && value.length > 0) {
-      return value[0].trim() || null;
-    }
-    if (typeof value === 'string') {
-      return value.trim() || null;
-    }
-    return null;
-  };
 
-
+  // --- Process Campus Directory Data ---
   const name = getFirst(props.apiData?.cn) || "Not Listed";
   const email = getFirst(props.apiData?.mail);
   const phone = getFirst(props.apiData?.telephonenumber) || "Not Listed";
@@ -70,23 +112,28 @@ export default function ProfInfoButton(props) {
       .trim()
       .toLowerCase();
 
+  // Logic to only show division if it's different from the department
   const showDivision =
     divisionValue && department && normalize(divisionValue) !== normalize(department);
 
+  // A clean list of contact details for the grid
   const detailItems = [
     email && { label: "Email", value: email, href: `mailto:${email}` },
     phone && { label: "Phone", value: phone, href: `tel:${phone}` },
   ].filter(Boolean);
 
-  // check if any of the "more info" fields actually have content or not - E.H
+  // Logic to determine if the "More Info" button should even exist - E.H
   // the field either has to have a valid type or null
   const hasMoreInfo = Boolean(officeHours) ||
     (Array.isArray(courses) && courses.length > 0) ||
     Boolean(researchInterest);
 
-  // handles photos that are valid and invalid - I.K
-  // using useCallBack for more efficient rendering (it memoizes handlePhotoURL)
-  // https://stackoverflow.com/questions/71265042/what-is-usecallback-in-react-and-when-to-use-it  - E.H
+    /**
+     * handles photos that are valid and invalid - I.K
+     * Wrapped in useCallback to stabilize it for the useEffect hook.
+     * Using useCallBack for more efficient rendering (it memoizes handlePhotoURL)
+     * https://stackoverflow.com/questions/71265042/what-is-usecallback-in-react-and-when-to-use-it  - E.H
+     */
   const handlePhotoURL = useCallback(() => {
     if (props.apiData) {
       const photoURL = props.apiData.jpegphoto;
@@ -100,31 +147,36 @@ export default function ProfInfoButton(props) {
     }
   }, [props.apiData]); // This function now only changes if apiData changes
 
-  // handles opening and closing of pop up - I.K
+  /**
+   * Handles opening and closing of pop up - I.K
+   * Also resets the "Show More" toggle when closing.  - E.H
+   */
   function handleOpen() {
     setIsOpen((prev) => !prev);
 
-    // reset the "more info" button section when closing the main popup  - E.H
     if (isOpen) {
       setShowMoreInfo(false);
     }
   }
 
-  // --- Handler for the "More Info" button ---
+  /**
+   * Toggles the "More Info" collapsible section.
+   */
   function handleToggleMoreInfo(e) {
     // Stop the click from closing the whole modal
-    // if the button is ever inside the click overlay
+    // if the button is ever inside the click overlay  - E.H
     e.stopPropagation(); 
     setShowMoreInfo((prev) => !prev);
   }
 
-  // This effect handles the photo loading  - E.H
+  /**
+   * Effect hook to load the professor's photo only when the modal is opened and we have data.  - E.H
+   */
   useEffect(() => {
-    // only need to run photo logic when the popup opens and we have data
     if (isOpen) {
       handlePhotoURL();
     }
-  }, [isOpen, handlePhotoURL]); 
+  }, [isOpen, handlePhotoURL]); // Runs when 'isOpen' or 'handlePhotoURL' changes
 
   function handleOverlayClick(event) {
     if (event.target === event.currentTarget) {
@@ -138,7 +190,9 @@ export default function ProfInfoButton(props) {
     return null;
   }
 
-  // Add the 'prof-is-open' class to the container when the modal is open
+  // When the modal is open, we add the 'prof-is-open' class to the
+  // main container. This gives it a higher z-index (1001)
+  // so it appears *above* the overlay and all other buttons.  - E.H
   const containerClass = isOpen 
     ? "prof-info-container prof-is-open" 
     : "prof-info-container";
@@ -199,6 +253,8 @@ export default function ProfInfoButton(props) {
                   </div>
                 </div>
               </div>
+              
+              {/* campus card section */}
               {detailItems.length > 0 && (
                 <div className="campus-card-grid">
                   {detailItems.map((item) => (
@@ -216,7 +272,7 @@ export default function ProfInfoButton(props) {
                 </div>
               )}
 
-              {/* This button will only show if there is info to hide */}
+              {/* More Info button */}
               {hasMoreInfo && (
                 <button className="prof-info-more-btn" onClick={handleToggleMoreInfo}>
                   {showMoreInfo ? "Show Less" : "More Info"}
@@ -224,7 +280,7 @@ export default function ProfInfoButton(props) {
               )}
 
 
-              {/* --- Collapsible (More Info) Section --- */}
+              {/* --- Collapsible More Info Section --- */}
               {showMoreInfo && (
                 <div className="prof-info-more-section">
                   {/* Office Hours */}
@@ -275,14 +331,17 @@ export default function ProfInfoButton(props) {
                       </a>
                     )}
                   </div>
+
                   <div className="rmp-card-grid">
+                    {/* stars rating */}
                     <div className="rmp-metric rating">
                       <span className="metric-label">Rating</span>
-                      <span className="metric-value">
-                        {roundedRating != null ? `${roundedRating}/5` : "N/A"}
-                      </span>
+                      {/* Use the new StarRating component */}
+                      <StarRating rating={roundedRating} numRatings={numRatings} />
                       <span className="metric-sub">Average score</span>
                     </div>
+
+                    {/* difficulty */}
                     <div className="rmp-metric difficulty">
                       <span className="metric-label">Difficulty</span>
                       <span className="metric-value">
@@ -290,6 +349,8 @@ export default function ProfInfoButton(props) {
                       </span>
                       <span className="metric-sub">Avg difficulty</span>
                     </div>
+
+                    {/* would take */}
                     <div className="rmp-metric would-take">
                       <span className="metric-label">Would Take Again</span>
                       <span className="metric-value">
@@ -299,14 +360,18 @@ export default function ProfInfoButton(props) {
                       </span>
                       <span className="metric-sub">Student approval</span>
                     </div>
+
+                    {/* total ratings */}
                     <div className="rmp-metric total-ratings">
-                      <span className="metric-label">Ratings</span>
+                      <span className="metric-label">Reviews</span>
                       <span className="metric-value">
                         {roundedWouldTakeAgain != null ? numRatings : "N/A"}
                       </span>
                       <span className="metric-sub">Total reviews</span>
                     </div>
                   </div>
+
+                  {/* top tags */}
                   {topTags.length > 0 && (
                     <div className="rmp-tags">
                       <span className="tags-label">Top Tags</span>
@@ -320,14 +385,18 @@ export default function ProfInfoButton(props) {
                       </div>
                     </div>
                   )}
+
                 </div>
               ) : (
+
+                // empty state
                 <div className="rmp-card empty">
                   <div className="rmp-card-header">
                     <h4>Rate My Professors</h4>
                   </div>
                   <p className="rmp-empty">Rate My Professors data not available.</p>
                 </div>
+
               )}
             </div>
           </div>
