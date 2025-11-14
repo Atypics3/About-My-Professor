@@ -46,7 +46,6 @@ const RATE_MY_PROFESSORS_QUERY = `query NewSearchTeachersQuery($text: String!, $
   }
 }`;
 
-
 // --- RateMyProfessors API Functions ---
 /**
  * Builds the variables object for the RMP GraphQL query.
@@ -72,7 +71,6 @@ function buildRmpQueryVariables(name, schoolId) {
   };
 }
 
-
 // --- RMP Data Processing Functions ---
 /**
  * Creates a list of searchable "tokens" from a professor's RMP data.
@@ -97,10 +95,7 @@ function createSearchTokens(node) {
     }
 
     // compact versions without spaces or punctuation
-    const compact = (value) =>
-      value
-        .replace(/[^a-zA-Z]/g, "")
-        .toLowerCase();
+    const compact = (value) => value.replace(/[^a-zA-Z]/g, "").toLowerCase();
     if (fullName) tokens.push(compact(fullName));
     if (reversedName) tokens.push(compact(reversedName));
     if (initials && last) tokens.push(compact(`${last}${initials}`));
@@ -116,7 +111,6 @@ function createSearchTokens(node) {
 
   return Array.from(new Set(tokens.filter(Boolean)));
 }
-
 
 /**
  * Uses Fuse.js fuzzy search to find the best RMP match for a given name.
@@ -182,7 +176,6 @@ export function selectBestRmpMatch(edges, name) {
   return candidates[0];
 }
 
-
 /**
  * Fetches data directly from the RateMyProfessors GraphQL endpoint.
  * This function does NOT use the cache.
@@ -213,7 +206,9 @@ async function fetchRateMyProfessorData(name, schoolId) {
   }
 
   if (!response.ok) {
-    throw new Error(`RateMyProfessors request failed with status ${response.status}`);
+    throw new Error(
+      `RateMyProfessors request failed with status ${response.status}`,
+    );
   }
 
   const payload = await response.json();
@@ -227,8 +222,6 @@ async function fetchRateMyProfessorData(name, schoolId) {
 
   return payload?.data?.newSearch?.teachers?.edges ?? null;
 }
-
-
 
 /**
  * A cached wrapper for the RateMyProfessors API.
@@ -271,7 +264,6 @@ export async function fetchCachedRateMyProfessorData(uID, name, schoolId) {
     });
 
     return apiResponse;
-
   } catch (error) {
     console.error(`Failed to fetch RMP data for ${name}`, error);
     await chrome.storage.local.remove(storageKey).catch(() => {});

@@ -16,9 +16,11 @@ const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
  */
 async function fetchProfileFromAPI(uID) {
   const response = await fetch(`${CAMPUS_DIRECTORY_BASE_URL}${uID}`);
-  
+
   if (!response.ok) {
-    throw new Error(`Campus directory request failed with status ${response.status}`);
+    throw new Error(
+      `Campus directory request failed with status ${response.status}`,
+    );
   }
 
   const data = await response.json();
@@ -28,7 +30,6 @@ async function fetchProfileFromAPI(uID) {
 
   return data;
 }
-
 
 /**
  * A cached wrapper for the campus directory API.
@@ -50,13 +51,13 @@ export async function fetchCachedCampusDirectoryProfile(uID) {
     // check the cache
     if (cachedEntry && now - cachedEntry.timestamp < CACHE_DURATION_MS) {
       console.log(`[CACHE HIT] Using cached data for ${uID}`);
-      return cachedEntry.data; 
+      return cachedEntry.data;
     }
 
     // CACHE MISS: Fetch new data
     console.log(`[CACHE MISS] Fetching new data for ${uID}`);
     const apiData = await fetchProfileFromAPI(uID);
-    
+
     // wrap the raw data in our standard response format
     const apiResponse = { data: apiData, success: true };
 
@@ -69,9 +70,11 @@ export async function fetchCachedCampusDirectoryProfile(uID) {
     });
 
     return apiResponse;
-
   } catch (error) {
-    console.error(`Failed to fetch campus directory profile for ${uID}:`, error.message);
+    console.error(
+      `Failed to fetch campus directory profile for ${uID}:`,
+      error.message,
+    );
     await chrome.storage.local.remove(storageKey).catch(() => {});
     return { data: null, success: false };
   }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "../styles/index.css";
 
-
 /**
  * Helper function to safely get the first trimmed item from a property
  * that could be a string or an array.
@@ -12,7 +11,7 @@ const getFirst = (value) => {
   if (Array.isArray(value) && value.length > 0) {
     return value[0].trim() || null;
   }
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return value.trim() || null;
   }
   return null;
@@ -45,7 +44,6 @@ function StarRating({ rating, numRatings }) {
     </div>
   );
 }
-
 
 /**
  * The main React component for the "Professor Info" button

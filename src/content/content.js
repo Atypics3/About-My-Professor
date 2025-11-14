@@ -96,14 +96,10 @@ async function renderIntoPanels() {
         uID = value;
       } else {
         // The value was a bad URL or something we couldn't parse
-        console.log(
-          `Found invalid UID value for ${name}: ${value}`
-        );
+        console.log(`Found invalid UID value for ${name}: ${value}`);
       }
     } else {
-      console.log(
-        `Couldn't match name to uID in the json for name: ${name}`
-      );
+      console.log(`Couldn't match name to uID in the json for name: ${name}`);
     }
 
     //get fullName from API
@@ -137,7 +133,7 @@ async function renderIntoPanels() {
     // 2. Add a class to the panel itself so we can use 'position: relative'
     targetPanel.classList.add("prof-panel-relative");
     targetPanel.appendChild(mount);
-    
+
     // 3. Find the <h2> and *remove* the flex class if it's there
     const targetHeader = panel.querySelector("h2");
     if (targetHeader) {
@@ -173,7 +169,7 @@ async function renderIntoPanels() {
         </React.StrictMode>,
       );
     }
-  };
+  }
 }
 
 // Initial attempt after a short delay for the iframe
