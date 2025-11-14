@@ -29,6 +29,7 @@ export default function ProfInfoButton(props) {
     const num = toNumber(value);
     return num != null ? Math.round(num) : null;
   };
+
   const roundedRating = roundToWhole(rating);
   const roundedWouldTakeAgain = roundToWhole(wouldTakeAgain);
   const name = props.apiData?.cn ?? "Not listed";

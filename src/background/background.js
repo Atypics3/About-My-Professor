@@ -1,5 +1,6 @@
 import Fuse from "fuse.js";
 
+// initializing rmp query and other related info - I.K
 const CAMPUS_DIRECTORY_BASE_URL = "https://campusdirectory.ucsc.edu/api/uid/";
 const RATE_MY_PROFESSORS_ENDPOINT = "https://www.ratemyprofessors.com/graphql";
 const UCSC_SCHOOL_ID = "U2Nob29sLTEwNzg="; // Base64 encoded "School-1078"
@@ -108,6 +109,7 @@ function buildRmpQueryVariables(name, schoolId) {
   };
 }
 
+// fetches rmp data given a prof name and the school id - I.K
 async function fetchRateMyProfessorData(name, schoolId) {
   if (!name) return null;
 
@@ -184,6 +186,7 @@ function createSearchTokens(node) {
   return Array.from(new Set(tokens.filter(Boolean)));
 }
 
+// gets the best match by using fuzzy search - I.K
 function selectBestRmpMatch(edges, name) {
   if (!Array.isArray(edges) || edges.length === 0) return null;
 
