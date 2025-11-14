@@ -7,7 +7,7 @@
     "https://my.ucsc.edu/*",
     "https://pisa.ucsc.edu/*",
     "https://campusdirectory.ucsc.edu/*",
-    "https://www.ratemyprofessors.com/graphql"
+    "https://www.ratemyprofessors.com/*"
   ],
   "background": {
     "service_worker": "background.js"

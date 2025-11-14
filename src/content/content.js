@@ -23,13 +23,6 @@ function getProfName(panel) {
   return null; // if name isn't found for whatever reason
 }
 
-/**
- * Sends a message to the background script to fetch all professor data
- * (both from the Campus Directory and RateMyProfessors).
- * @param {string} uID - The professor's User ID (e.g., "pdey").
- * @param {string} name - The professor's name from the panel (e.g., "DEY,P.").
- * @returns {Promise<object>} A promise that resolves with the complete profile object.
- */
 async function getProfessorData(uID, name) {
   return chrome.runtime.sendMessage({
     action: "fetchProfessorData",
@@ -173,7 +166,10 @@ async function renderIntoPanels() {
     if (uID != "jdoe") {
       root.render(
         <React.StrictMode>
-          <ProfInfoButton apiData={profData} rateMyProfessor={rateMyProfessorData} />
+          <ProfInfoButton
+            apiData={profData}
+            rateMyProfessor={rateMyProfessorData}
+          />
         </React.StrictMode>,
       );
     }

@@ -42,44 +42,29 @@
   background-color: #00508f; 
   color: #ffffff;
   cursor: pointer;
-  
-  /* MUI-style shadow */
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
-  
-  transition: all 0.2s ease-in-out;
+  font-size: 14px;
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
-
-.prof-info-btn svg {
-  width: 20px;
-  height: 20px;
-}
-
 
 .prof-info-btn:hover {
-  background-color: #003a6a; 
-  transform: scale(1.1); 
-  box-shadow: 0 4px 5px -2px rgba(0, 0, 0, 0.2),
-    0 7px 10px 1px rgba(0, 0, 0, 0.14), 0 2px 16px 1px rgba(0, 0, 0, 0.12);
+  background: #4338ca;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.25);
 }
-
-
-/* Modal properties */
 
 .prof-info-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  /* overlay sits at 1000, active (1001) sits above it, inactive (999) are below it */
-  z-index: 1000;
+  inset: 0;
   background: rgba(15, 23, 42, 0.45);
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
   padding: 32px 36px;
-  animation: fadeIn 0.3s ease-out;
+  z-index: 2147483000;
 }
 
 .prof-info-modal {
@@ -94,6 +79,7 @@
     0 4px 16px rgba(15, 23, 42, 0.12);
   border: 1px solid rgba(226, 232, 240, 0.8);
   position: relative;
+  animation: prof-info-fade-in 160ms ease-out;
 }
 
 .prof-info-header {
@@ -132,12 +118,6 @@
   border-color: #4338ca;
 }
 
- /* This class is added by content.js to the main panel */
-.prof-panel-relative {
-  position: relative;
-}
-
-
 .prof-photo {
   border-radius: 50%;
   width: 96px;
@@ -165,35 +145,6 @@
   list-style-type: disc;
 }
 
-
-/* more info section */
-.prof-info-more-btn {
-  font-size: 14px;
-  font-weight: 600;
-  color: #00508f; 
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px 16px; 
-  margin-top: 4px;
-  border-radius: 4px;
-  width: 100%;
-  text-align: center;
-}
-
-.prof-info-more-btn:hover {
-  background-color: #f0f2f5;
-}
-
-.prof-info-more-section {
-  padding: 0;
-  margin: 0;
-  animation: fadeIn 0.3s ease-in-out;
-  border-top: 1px solid #e1e4e8; /* Add a separator */
-  padding-top: 12px;
-  margin-top: 12px;
-}
-
 .prof-info-modal p {
   margin: 8px 0;
   color: #0f172a;
@@ -214,7 +165,6 @@
   font-weight: 600;
 }
 
-
 .prof-info-modal a:hover {
   text-decoration: underline;
 }
@@ -224,8 +174,6 @@
   padding-top: 16px;
   border-top: 1px solid rgba(226, 232, 240, 0.9);
 }
-
-/* the component for the More Info modal */
 
 .campus-card {
   background: linear-gradient(165deg, #ffffff 0%, #f8fafc 65%);
@@ -329,6 +277,15 @@
 
 .campus-card-section {
   padding-top: 16px;
+  border-top: 1px solid rgba(226, 232, 240, 0.7);
+}
+
+.campus-card-section h6 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
 }
 
 .campus-card-section ul {
@@ -348,8 +305,6 @@
   color: #0f172a;
   line-height: 1.6;
 }
-
-/* RMP section */
 
 .rmp-card {
   background: linear-gradient(165deg, #f8fafc 0%, #ffffff 65%);
@@ -427,7 +382,12 @@
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(160deg, rgba(99, 102, 241, 0.08), rgba(59, 130, 246, 0.1) 60%, transparent);
+  background: linear-gradient(
+    160deg,
+    rgba(99, 102, 241, 0.08),
+    rgba(59, 130, 246, 0.1) 60%,
+    transparent
+  );
   opacity: 0;
   transition: opacity 0.25s ease;
 }
@@ -455,36 +415,6 @@
   color: #64748b;
 }
 
-
-/* text colors for difficulty, and would-take */
-.rmp-metric.difficulty .metric-value { color: #d0021b; }
-.rmp-metric.would-take .metric-value { color: #2ecc36; }
-
-/* star ratings */
-.star-rating {
-  display: flex;
-  align-items: center;
-  /* Use the same font size as metric-value for N/A text */
-  font-size: 24px;
-  font-weight: 700;
-  color: #111;
-}
-.star-rating svg {
-  width: 20px;
-  height: 20px;
-  margin-right: 2px;
-}
-.star-filled {
-  fill: #ecf545;
-  stroke: #000000;
-}
-.star-empty {
-  fill: none;
-  stroke: #ccc; /* Empty star color */
-  stroke-width: 1.5;
-}
-
-/* top tags */
 .rmp-tags {
   display: flex;
   flex-direction: column;
@@ -532,44 +462,6 @@
   font-style: italic;
 }
 
-
-/*
- * ==========================================
- * RESPONSIVE MODAL STYLES
- * ==========================================
- */
- @media (max-width: 768px) {
-  .prof-info-modal-overlay {
-    align-items: flex-end;
-  }
-
-  .prof-info-modal {
-    flex-direction: column; 
-    width: 100%;
-    max-width: 100%;
-    max-height: 85vh;
-    border-radius: 12px 12px 0 0; 
-    animation: slideInUp 0.3s ease-out;
-  }
-
-  .campus-card,
-  .rmp-section {
-    flex-basis: auto;
-    overflow-y: visible;
-  }
-
-  .rmp-section {
-    border-left: none;
-    border-top: 8px solid #e1e4e8;
-  }
-}
-
-
-/*
- * ==========================================
- * KEYFRAME ANIMATIONS
- * ==========================================
- */
 @keyframes prof-info-fade-in {
   from {
     opacity: 0;
@@ -579,9 +471,4 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
 }
