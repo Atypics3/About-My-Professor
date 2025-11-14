@@ -199,13 +199,13 @@ export default function ProfInfoButton(props) {
       {/* Button to toggle popup */}
       <button className="prof-info-btn" onClick={handleOpen}>
         {/* SVG Icon */}
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="3" 
-          strokeLinecap="round" 
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
           strokeLinejoin="round"
         >
           <circle cx="12" cy="12" r="10"></circle>
@@ -232,7 +232,11 @@ export default function ProfInfoButton(props) {
               </div>
               <div className="campus-card-hero">
                 {isPhoto ? (
-                  <img className="prof-photo" src={isPhoto} alt="Professor photo" />
+                  <img
+                    className="prof-photo"
+                    src={isPhoto}
+                    alt="Professor photo"
+                  />
                 ) : (
                   <img
                     className="prof-photo"
@@ -243,14 +247,18 @@ export default function ProfInfoButton(props) {
                 <div className="campus-card-hero-text">
                   <h5>{name}</h5>
                   <div className="campus-chip-row">
-                    {department && <span className="campus-chip">{department}</span>}
+                    {department && (
+                      <span className="campus-chip">{department}</span>
+                    )}
                     {showDivision && (
-                      <span className="campus-chip subtle">{divisionValue}</span>
+                      <span className="campus-chip subtle">
+                        {divisionValue}
+                      </span>
                     )}
                   </div>
                 </div>
               </div>
-              
+
               {/* campus card section */}
               {detailItems.length > 0 && (
                 <div className="campus-card-grid">
@@ -271,26 +279,32 @@ export default function ProfInfoButton(props) {
 
               {/* More Info button */}
               {hasMoreInfo && (
-                <button className="prof-info-more-btn" onClick={handleToggleMoreInfo}>
+                <button
+                  className="prof-info-more-btn"
+                  onClick={handleToggleMoreInfo}
+                >
                   {showMoreInfo ? "Show Less" : "More Info"}
                 </button>
               )}
-
 
               {/* --- Collapsible More Info Section --- */}
               {showMoreInfo && (
                 <div className="prof-info-more-section">
                   {/* Office Hours */}
                   {officeHours && (
-                     <div className="campus-card-section">
-                        <p><strong>Office Hours:</strong> {officeHours}</p>
-                     </div>
+                    <div className="campus-card-section">
+                      <p>
+                        <strong>Office Hours:</strong> {officeHours}
+                      </p>
+                    </div>
                   )}
 
                   {/* Courses Taught */}
                   {Array.isArray(courses) && courses.length > 0 && (
                     <div className="campus-card-section">
-                      <p><strong>Courses Taught:</strong></p>
+                      <p>
+                        <strong>Courses Taught:</strong>
+                      </p>
                       <ul>
                         {courses.map((course, i) => (
                           <li key={i}>{course}</li>
@@ -300,18 +314,23 @@ export default function ProfInfoButton(props) {
                   )}
 
                   {/* Research Interest */}
-                   {(() => {
-                      if (typeof researchInterest === "string" && researchInterest.trim()) {
-                        const rInterestHTML =
-                          "<p><strong>Research Interests: </strong>" + researchInterest + "</p>";
-                        return (
-                          <div
-                            className="campus-card-section"
-                            dangerouslySetInnerHTML={{ __html: rInterestHTML }}
-                          />
-                        );
-                      }
-                    })()}
+                  {(() => {
+                    if (
+                      typeof researchInterest === "string" &&
+                      researchInterest.trim()
+                    ) {
+                      const rInterestHTML =
+                        "<p><strong>Research Interests: </strong>" +
+                        researchInterest +
+                        "</p>";
+                      return (
+                        <div
+                          className="campus-card-section"
+                          dangerouslySetInnerHTML={{ __html: rInterestHTML }}
+                        />
+                      );
+                    }
+                  })()}
                 </div>
               )}
             </div>
@@ -334,7 +353,10 @@ export default function ProfInfoButton(props) {
                     <div className="rmp-metric rating">
                       <span className="metric-label">Rating</span>
                       {/* Use the new StarRating component */}
-                      <StarRating rating={roundedRating} numRatings={numRatings} />
+                      <StarRating
+                        rating={roundedRating}
+                        numRatings={numRatings}
+                      />
                       <span className="metric-sub">Average score</span>
                     </div>
 
@@ -342,7 +364,9 @@ export default function ProfInfoButton(props) {
                     <div className="rmp-metric difficulty">
                       <span className="metric-label">Difficulty</span>
                       <span className="metric-value">
-                        {roundedDifficulty != null ? `${roundedDifficulty}/5` : "N/A"}
+                        {roundedDifficulty != null
+                          ? `${roundedDifficulty}/5`
+                          : "N/A"}
                       </span>
                       <span className="metric-sub">Avg difficulty</span>
                     </div>
@@ -351,7 +375,7 @@ export default function ProfInfoButton(props) {
                     <div className="rmp-metric would-take">
                       <span className="metric-label">Would Take Again</span>
                       <span className="metric-value">
-                          {roundedWouldTakeAgain != null && numRatings > 0
+                        {roundedWouldTakeAgain != null && numRatings > 0
                           ? `${roundedWouldTakeAgain}%`
                           : "N/A"}
                       </span>
@@ -374,7 +398,10 @@ export default function ProfInfoButton(props) {
                       <span className="tags-label">Top Tags</span>
                       <div className="tags-grid">
                         {topTags.map((tag) => (
-                          <span className="tag-chip" key={tag.id || tag.legacyId}>
+                          <span
+                            className="tag-chip"
+                            key={tag.id || tag.legacyId}
+                          >
                             <span className="tag-name">{tag.tagName}</span>
                             <span className="tag-count">{tag.tagCount}</span>
                           </span>
@@ -382,18 +409,17 @@ export default function ProfInfoButton(props) {
                       </div>
                     </div>
                   )}
-
                 </div>
               ) : (
-
                 // empty state
                 <div className="rmp-card empty">
                   <div className="rmp-card-header">
                     <h4>Rate My Professors</h4>
                   </div>
-                  <p className="rmp-empty">Rate My Professors data not available.</p>
+                  <p className="rmp-empty">
+                    Rate My Professors data not available.
+                  </p>
                 </div>
-
               )}
             </div>
           </div>
