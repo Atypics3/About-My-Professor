@@ -3,6 +3,12 @@ import { createRoot } from "react-dom/client";
 import ProfInfoButton from "../react/components/ProfInfoButton.jsx";
 import data from "../data/prof_uids.json";
 
+/**
+ * Scrapes the professor's name from a specific, known HTML structure
+ * in a class panel.
+ * @param {Element} panel - The DOM element for a single course panel.
+ * @returns {string | null} The professor's name (e.g., "TANTALO,C") or null if not found.
+ */
 function getProfName(panel) {
   const profDivs = panel.querySelectorAll("div.col-xs-6.col-sm-3");
 
@@ -25,11 +31,17 @@ async function getProfessorData(uID, name) {
   });
 }
 
-function renderIntoPanels() {
+/**
+ * Main function to find all course panels on the page and inject
+ * the React info-button component into each one.
+ * This function is 'async' because it must 'await' the API
+ * response from the background script for each panel.
+ */
+async function renderIntoPanels() {
   const panels = document.querySelectorAll(".panel.panel-default.row");
   if (!panels || panels.length === 0) return;
 
-  panels.forEach(async (panel) => {
+  for (const panel of panels) {
     if (panel.querySelector(".about-my-professor-root")) return; // avoid duplicate mounts(will come in handy when we cache the results)
 
     //get name from panel
@@ -52,21 +64,43 @@ function renderIntoPanels() {
       //console.log("name from regex ",name);
     }
 
+    // //get uID from json
+    // let uID = "jdoe";
+    // //console.log(data);
+    // //get uID by indexing the json data as a dictionary
+    // if (data[name]) {
+    //   uID = data[name];
+    // } else {
+    //   console.log(
+    //     "couldn't match name to uID in the json, gave output",
+    //     data[name],
+    //     "for name: ",
+    //     name,
+    //   );
+    // }
+    //console.log(uID);
+
     //get uID from json
     let uID = "jdoe";
-    //console.log(data);
-    //get uID by indexing the json data as a dictionary
     if (data[name]) {
-      uID = data[name];
+      const value = String(data[name]); // Get the value, e.g., "https://...uid=chern133"
+
+      // Use regex to find 'uid=' and capture what's after it
+      const uidMatch = value.match(/uid=([\w-]+)/);
+
+      if (uidMatch && uidMatch[1]) {
+        // Found a match! e.g., uidMatch[1] is "chern133"
+        uID = uidMatch[1];
+      } else if (!value.includes("http")) {
+        // Fallback: The value might already be a clean UID
+        uID = value;
+      } else {
+        // The value was a bad URL or something we couldn't parse
+        console.log(`Found invalid UID value for ${name}: ${value}`);
+      }
     } else {
-      console.log(
-        "couldn't match name to uID in the json, gave output",
-        data[name],
-        "for name: ",
-        name,
-      );
+      console.log(`Couldn't match name to uID in the json for name: ${name}`);
     }
-    //console.log(uID);
 
     //get fullName from API
     let profileDict = null;
@@ -90,9 +124,36 @@ function renderIntoPanels() {
       rateMyProfessorData = profileDict.rateMyProfessor;
     }
 
-    const mount = document.createElement("div");
+    // Find the main course title header (the <h2>)
+    const targetPanel = panel;
+
+    const mount = document.createElement("span");
     mount.className = "about-my-professor-root";
-    panel.appendChild(mount);
+
+    // 2. Add a class to the panel itself so we can use 'position: relative'
+    targetPanel.classList.add("prof-panel-relative");
+    targetPanel.appendChild(mount);
+
+    // 3. Find the <h2> and *remove* the flex class if it's there
+    const targetHeader = panel.querySelector("h2");
+    if (targetHeader) {
+      targetHeader.classList.remove("prof-info-header-flex");
+    }
+
+    /** Keeping old placement just in case we want it back  - E.H */
+    // const mount = document.createElement("div");
+    // mount.className = "about-my-professor-root";
+    // // panel.appendChild(mount);
+    // const columns = panel.querySelectorAll("div.col-xs-6.col-sm-3");
+    // if (columns.length > 0) {
+    //   // Get the last column (which contains "In Person")
+    //   const lastColumn = columns[columns.length - 1];
+    //   // Append the button container inside it
+    //   lastColumn.appendChild(mount);
+    // } else {
+    //   // Fallback in case the structure is different
+    //   panel.appendChild(mount);
+    // }
     const root = createRoot(mount);
 
     // in a typical react application, you'll render the main entry point within 'root'
@@ -108,7 +169,7 @@ function renderIntoPanels() {
         </React.StrictMode>,
       );
     }
-  });
+  }
 }
 
 // Initial attempt after a short delay for the iframe
