@@ -75,6 +75,65 @@ export default function ProfInfoButton(props) {
     officeHours && { label: "Office Hours", value: officeHours },
   ].filter(Boolean);
 
+  //Shorten long URLs for display
+  const formatLinkLabel = (url) => {
+    try {
+      const u = new URL(url);
+      const host = u.hostname.replace("www.", ""); // remove "www."
+      let path = u.pathname;
+  
+      // shorten long paths
+      if (path.length > 20) {
+        path = path.slice(0, 20) + "...";
+      }
+  
+      return `${host}${path}`;
+    } catch {
+      return url; // fallback
+    }
+  };
+  
+
+  // Extract website URL (ucscpersonpubwebsite)
+  let website = null;
+  const websiteField = props.apiData?.ucscpersonpubwebsite;
+
+  if (Array.isArray(websiteField) && websiteField.length > 0) {
+    const raw = websiteField[0];
+    if (typeof raw === "string" && raw.trim()) {
+      // value looks like: "https://leaper.sites.ucsc.edu/ Campbell Leaper Web Page"
+      website = raw.split(" ")[0].trim(); // just the URL
+    }
+  } else if (typeof websiteField === "string" && websiteField.trim()) {
+    website = websiteField.split(" ")[0].trim();
+  }
+
+  // Extract publication links (from ucscpersonpubselectedpublication HTML)
+  let publicationLinks = [];
+  const publicationsField = props.apiData?.ucscpersonpubselectedpublication;
+
+  const extractLinksFromHtml = (html) => {
+    if (typeof html !== "string" || !html.trim()) return [];
+    const links = [];
+    const regex = /href="([^"]+)"/g;
+    let match;
+    while ((match = regex.exec(html)) !== null) {
+      links.push(match[1]);
+    }
+    return links;
+  };
+
+  if (Array.isArray(publicationsField) && publicationsField.length > 0) {
+    publicationLinks = extractLinksFromHtml(publicationsField[0]);
+  } else if (typeof publicationsField === "string") {
+    publicationLinks = extractLinksFromHtml(publicationsField);
+  }
+
+  // Remove duplicates, just in case
+  publicationLinks = Array.from(new Set(publicationLinks));
+
+
+
   // handles photos that are valid and invalid - I.K
   function handlePhotoURL() {
     const photoURL = props.apiData.jpegphoto;
@@ -196,6 +255,40 @@ export default function ProfInfoButton(props) {
                   );
                 }
               })()}
+              {website && (
+                <div className="campus-card-section">
+                  <h6>Website</h6>
+                  <a
+                    className="campus-link"
+                    href={website}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {formatLinkLabel(website)}
+                  </a>
+                </div>
+              )}
+
+
+              {publicationLinks.length > 0 && (
+                <div className="campus-card-section">
+                  <h6>Selected Publications</h6>
+                  <ul>
+                    {publicationLinks.slice(0, 5).map((link, i) => (
+                      <li key={i}>
+                        <a
+                          className="campus-link"
+                          href={link}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {formatLinkLabel(link)}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
 
             <div className="rmp-section">
