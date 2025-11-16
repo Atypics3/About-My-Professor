@@ -118,6 +118,62 @@ export default function ProfInfoButton(props) {
     phone && { label: "Phone", value: phone, href: `tel:${phone}` },
   ].filter(Boolean);
 
+  //Shorten long URLs for display
+  const formatLinkLabel = (url) => {
+    try {
+      const u = new URL(url);
+      const host = u.hostname.replace("www.", ""); // remove "www."
+      let path = u.pathname;
+
+      // shorten long paths
+      if (path.length > 20) {
+        path = path.slice(0, 20) + "...";
+      }
+
+      return `${host}${path}`;
+    } catch {
+      return url; // fallback
+    }
+  };
+
+  // Extract website URL (ucscpersonpubwebsite)
+  let website = null;
+  const websiteField = props.apiData?.ucscpersonpubwebsite;
+
+  if (Array.isArray(websiteField) && websiteField.length > 0) {
+    const raw = websiteField[0];
+    if (typeof raw === "string" && raw.trim()) {
+      // value looks like: "https://leaper.sites.ucsc.edu/ Campbell Leaper Web Page"
+      website = raw.split(" ")[0].trim(); // just the URL
+    }
+  } else if (typeof websiteField === "string" && websiteField.trim()) {
+    website = websiteField.split(" ")[0].trim();
+  }
+
+  // Extract publication links (from ucscpersonpubselectedpublication HTML)
+  let publicationLinks = [];
+  const publicationsField = props.apiData?.ucscpersonpubselectedpublication;
+
+  const extractLinksFromHtml = (html) => {
+    if (typeof html !== "string" || !html.trim()) return [];
+    const links = [];
+    const regex = /href="([^"]+)"/g;
+    let match;
+    while ((match = regex.exec(html)) !== null) {
+      links.push(match[1]);
+    }
+    return links;
+  };
+
+  if (Array.isArray(publicationsField) && publicationsField.length > 0) {
+    publicationLinks = extractLinksFromHtml(publicationsField[0]);
+  } else if (typeof publicationsField === "string") {
+    publicationLinks = extractLinksFromHtml(publicationsField);
+  }
+
+  // Remove duplicates, just in case
+  publicationLinks = Array.from(new Set(publicationLinks));
+
   // Logic to determine if the "More Info" button should even exist - E.H
   // the field either has to have a valid type or null
   const hasMoreInfo =
@@ -259,8 +315,11 @@ export default function ProfInfoButton(props) {
                 </div>
               </div>
 
-              {/* campus card section */}
-              {detailItems.length > 0 && (
+              {/* campus card section*/}
+              {/* gets and displays professor's website and publication link - L.L */}
+              {(detailItems.length > 0 ||
+                website ||
+                publicationLinks.length > 0) && (
                 <div className="campus-card-grid">
                   {detailItems.map((item) => (
                     <div className="campus-detail" key={item.label}>
@@ -274,6 +333,44 @@ export default function ProfInfoButton(props) {
                       )}
                     </div>
                   ))}
+
+                  {/* Website, styled like Email/Phone */}
+                  {website && (
+                    <div className="campus-detail">
+                      <span className="detail-label">Website</span>
+                      <a
+                        className="detail-value"
+                        href={website}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {formatLinkLabel(website)}
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Selected publications, also in the same grid cell */}
+                  {publicationLinks.length > 0 && (
+                    <div className="campus-detail">
+                      <span className="detail-label">
+                        Selected Publications
+                      </span>
+                      <ul className="detail-value-list">
+                        {publicationLinks.slice(0, 5).map((link, i) => (
+                          <li key={i}>
+                            <a
+                              className="detail-value"
+                              href={link}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {formatLinkLabel(link)}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -333,6 +430,25 @@ export default function ProfInfoButton(props) {
                   })()}
                 </div>
               )}
+              {(() => {
+                const researchInterest =
+                  props.apiData?.ucscpersonpubresearchinterest;
+                if (
+                  typeof researchInterest === "string" &&
+                  researchInterest.trim()
+                ) {
+                  const rInterestHTML =
+                    "<p><strong>Research Interests:</strong>" +
+                    researchInterest +
+                    "</p>";
+                  return (
+                    <div
+                      className="campus-card-section"
+                      dangerouslySetInnerHTML={{ __html: rInterestHTML }}
+                    />
+                  );
+                }
+              })()}
             </div>
 
             {/* RMP section */}
