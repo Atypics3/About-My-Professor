@@ -81,18 +81,17 @@ export default function ProfInfoButton(props) {
       const u = new URL(url);
       const host = u.hostname.replace("www.", ""); // remove "www."
       let path = u.pathname;
-  
+
       // shorten long paths
       if (path.length > 20) {
         path = path.slice(0, 20) + "...";
       }
-  
+
       return `${host}${path}`;
     } catch {
       return url; // fallback
     }
   };
-  
 
   // Extract website URL (ucscpersonpubwebsite)
   let website = null;
@@ -131,8 +130,6 @@ export default function ProfInfoButton(props) {
 
   // Remove duplicates, just in case
   publicationLinks = Array.from(new Set(publicationLinks));
-
-
 
   // handles photos that are valid and invalid - I.K
   function handlePhotoURL() {
@@ -268,7 +265,6 @@ export default function ProfInfoButton(props) {
                   </a>
                 </div>
               )}
-
 
               {publicationLinks.length > 0 && (
                 <div className="campus-card-section">
