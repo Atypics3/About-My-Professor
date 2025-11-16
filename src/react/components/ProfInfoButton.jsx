@@ -174,7 +174,6 @@ export default function ProfInfoButton(props) {
   // Remove duplicates, just in case
   publicationLinks = Array.from(new Set(publicationLinks));
 
-  
   // Logic to determine if the "More Info" button should even exist - E.H
   // the field either has to have a valid type or null
   const hasMoreInfo =
@@ -316,8 +315,11 @@ export default function ProfInfoButton(props) {
                 </div>
               </div>
 
-              {/* campus card section */}
-              {detailItems.length > 0 && (
+              {/* campus card section*/}
+              {/* gets and displays professor's website and publication link - L.L */}
+              {(detailItems.length > 0 ||
+                website ||
+                publicationLinks.length > 0) && (
                 <div className="campus-card-grid">
                   {detailItems.map((item) => (
                     <div className="campus-detail" key={item.label}>
@@ -331,6 +333,44 @@ export default function ProfInfoButton(props) {
                       )}
                     </div>
                   ))}
+
+                  {/* Website, styled like Email/Phone */}
+                  {website && (
+                    <div className="campus-detail">
+                      <span className="detail-label">Website</span>
+                      <a
+                        className="detail-value"
+                        href={website}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {formatLinkLabel(website)}
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Selected publications, also in the same grid cell */}
+                  {publicationLinks.length > 0 && (
+                    <div className="campus-detail">
+                      <span className="detail-label">
+                        Selected Publications
+                      </span>
+                      <ul className="detail-value-list">
+                        {publicationLinks.slice(0, 5).map((link, i) => (
+                          <li key={i}>
+                            <a
+                              className="detail-value"
+                              href={link}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {formatLinkLabel(link)}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -409,39 +449,6 @@ export default function ProfInfoButton(props) {
                   );
                 }
               })()}
-              {website && (
-                <div className="campus-card-section">
-                  <h6>Website</h6>
-                  <a
-                    className="campus-link"
-                    href={website}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {formatLinkLabel(website)}
-                  </a>
-                </div>
-              )}
-
-              {publicationLinks.length > 0 && (
-                <div className="campus-card-section">
-                  <h6>Selected Publications</h6>
-                  <ul>
-                    {publicationLinks.slice(0, 5).map((link, i) => (
-                      <li key={i}>
-                        <a
-                          className="campus-link"
-                          href={link}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {formatLinkLabel(link)}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
 
             {/* RMP section */}
