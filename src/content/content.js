@@ -44,7 +44,7 @@ async function getProfessorData(uID, name) {
  * @returns {Promise<object>} A dictionary mapping Full Name to Research Topic.
  */
 async function fetchLocalResearchData() {
-  const url = chrome.runtime.getURL('prof_research_topics.json');
+  const url = chrome.runtime.getURL("prof_research_topics.json");
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -147,13 +147,16 @@ async function renderIntoPanels() {
     }
     //console.log("dict: ", profileDict?.data);
 
-    let profData, rateMyProfessorData, researchTopicText, fullName = null;
-    // get full data from API 
+    let profData,
+      rateMyProfessorData,
+      researchTopicText,
+      fullName = null;
+    // get full data from API
     if (profileDict != null) {
       profData = profileDict.data;
       rateMyProfessorData = profileDict.rateMyProfessor;
       fullName = getFirst(profData?.cn);
-      researchTopicText = researchTopics[[fullName]]
+      researchTopicText = researchTopics[[fullName]];
     }
 
     // Find the main course title header (the <h2>)
@@ -197,7 +200,7 @@ async function renderIntoPanels() {
           <ProfInfoButton
             apiData={profData}
             rateMyProfessor={rateMyProfessorData}
-            localResearchTopic={researchTopicText}   // Pass the specific research topic as a string
+            localResearchTopic={researchTopicText} // Pass the specific research topic as a string
           />
         </React.StrictMode>,
       );

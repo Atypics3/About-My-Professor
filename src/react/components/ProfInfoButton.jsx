@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "../styles/index.css";
-import { getFirst } from "../../utils/utils"
+import { getFirst } from "../../utils/utils";
 
 /**
  * A new component to render a 5-star rating.
@@ -82,7 +82,9 @@ export default function ProfInfoButton(props) {
   const department = getFirst(props.apiData?.ucscpersonpubdepartmentnumber);
   const divisionValue = getFirst(props.apiData?.ucscpersonpubdivision);
   const officeHours = getFirst(props.apiData?.ucscpersonpubofficehours);
-  const researchInterest = localResearchTopic || getFirst(props.apiData?.ucscpersonpubresearchinterest);
+  const researchInterest =
+    localResearchTopic ||
+    getFirst(props.apiData?.ucscpersonpubresearchinterest);
   const courses = props.apiData?.ucscpersonpubfacultycourses; // assumes this is already an array
 
   const normalize = (value) =>
