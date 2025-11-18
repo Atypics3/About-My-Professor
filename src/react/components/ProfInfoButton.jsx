@@ -82,9 +82,10 @@ export default function ProfInfoButton(props) {
   const department = getFirst(props.apiData?.ucscpersonpubdepartmentnumber);
   const divisionValue = getFirst(props.apiData?.ucscpersonpubdivision);
   const officeHours = getFirst(props.apiData?.ucscpersonpubofficehours);
-  const researchInterest =
-    localResearchTopic ||
-    getFirst(props.apiData?.ucscpersonpubresearchinterest);
+  const researchTopicText = localResearchTopic;
+  const researchInterest = getFirst(
+    props.apiData?.ucscpersonpubresearchinterest,
+  );
   const courses = props.apiData?.ucscpersonpubfacultycourses; // assumes this is already an array
 
   const normalize = (value) =>
@@ -165,7 +166,10 @@ export default function ProfInfoButton(props) {
   const hasMoreInfo =
     Boolean(officeHours) ||
     (Array.isArray(courses) && courses.length > 0) ||
-    Boolean(researchInterest);
+    Boolean(researchTopicText) || // Use the main topic text
+    Boolean(researchInterest) || // Check for the keyword field
+    Boolean(website) ||
+    publicationLinks.length > 0;
 
   /**
    * handles photos that are valid and invalid - I.K
@@ -414,27 +418,29 @@ export default function ProfInfoButton(props) {
                       );
                     }
                   })()}
+
+                  {/* Research Topic (Local Scraped Field: Topic Paragraph) */}
+                  {researchTopicText && (
+                    <div className="campus-card-section">
+                      <p>
+                        <strong>Research Topic:</strong>
+                      </p>
+                      {/* Displays the full, descriptive paragraph */}
+                      <p>{researchTopicText}</p>
+                    </div>
+                  )}
+
+                  {/* This handles the case where the API had no short description */}
+                  {!researchTopicText && !researchInterest && (
+                    <div className="campus-card-section">
+                      <p>
+                        <strong>Research Info:</strong> Not listed in public
+                        directory.
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
-              {(() => {
-                const researchInterest =
-                  props.apiData?.ucscpersonpubresearchinterest;
-                if (
-                  typeof researchInterest === "string" &&
-                  researchInterest.trim()
-                ) {
-                  const rInterestHTML =
-                    "<p><strong>Research Interests:</strong>" +
-                    researchInterest +
-                    "</p>";
-                  return (
-                    <div
-                      className="campus-card-section"
-                      dangerouslySetInnerHTML={{ __html: rInterestHTML }}
-                    />
-                  );
-                }
-              })()}
             </div>
 
             {/* RMP section */}
