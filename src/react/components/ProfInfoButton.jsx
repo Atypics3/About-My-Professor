@@ -92,7 +92,7 @@ export default function ProfInfoButton(props) {
   // --- Process Campus Directory Data ---
   const name = getFirst(props.apiData?.cn) || "Not Listed";
   const email = getFirst(props.apiData?.mail);
-  const phone = getFirst(props.apiData?.telephonenumber) || "Not Listed";
+  const phone = getFirst(props.apiData?.telephonenumber);
   const department = getFirst(props.apiData?.ucscpersonpubdepartmentnumber);
   const divisionValue = getFirst(props.apiData?.ucscpersonpubdivision);
   const officeHours = getFirst(props.apiData?.ucscpersonpubofficehours);
