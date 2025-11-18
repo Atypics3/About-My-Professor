@@ -1,21 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "../styles/index.css";
-
-/**
- * Helper function to safely get the first trimmed item from a property
- * that could be a string or an array.
- * @param {*} value - The value to parse (e.g., [" John "] or " John ")
- * @returns {string|null} The trimmed string or null.
- */
-const getFirst = (value) => {
-  if (Array.isArray(value) && value.length > 0) {
-    return value[0].trim() || null;
-  }
-  if (typeof value === "string") {
-    return value.trim() || null;
-  }
-  return null;
-};
+import { getFirst } from "../../utils/utils"
 
 /**
  * A new component to render a 5-star rating.
@@ -50,6 +35,7 @@ export default function ProfInfoButton(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPhoto, setIsPhoto] = useState("");
   const [showMoreInfo, setShowMoreInfo] = useState(false);
+  const localResearchTopic = props.localResearchTopic;
 
   // rate my professor data - I.K
   const rateMyProfessor = props.rateMyProfessor;
@@ -96,9 +82,7 @@ export default function ProfInfoButton(props) {
   const department = getFirst(props.apiData?.ucscpersonpubdepartmentnumber);
   const divisionValue = getFirst(props.apiData?.ucscpersonpubdivision);
   const officeHours = getFirst(props.apiData?.ucscpersonpubofficehours);
-  const researchInterest = getFirst(
-    props.apiData?.ucscpersonpubresearchinterest,
-  ); // assumes this is not an array/string to be trimmed
+  const researchInterest = localResearchTopic || getFirst(props.apiData?.ucscpersonpubresearchinterest);
   const courses = props.apiData?.ucscpersonpubfacultycourses; // assumes this is already an array
 
   const normalize = (value) =>
